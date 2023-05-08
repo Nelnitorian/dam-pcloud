@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Práctica ServiciosWeb</string>
+    <string name="titulo_rest">Información meteorológica REST</string>
+    <string name="pais">País</string>
+    <string name="ciudad">Ciudad</string>
+    <string name="titulo_soap">Calculadora SOAP</string>
+    <string name="valor1">Valor1</string>
+    <string name="valor2">Valor2</string>
+    <string name="resultado">Resultado</string>
+    <string name="amanecer">Amanecer</string>
+    <string name="presion">Presión</string>
+    <string name="temperatura">Temperatura</string>
+    <string name="viento">Viento</string>
+    <string name="ocaso">Ocaso</string>
+    <string name="hora">Hora</string>
+    <string name="visibilidad">Visibilidad</string>
+    <string name="humedad">Humedad</string>
+</resources>
