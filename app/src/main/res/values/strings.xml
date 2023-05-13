@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Práctica ServiciosWeb</string>
-    <string name="titulo_rest">Información meteorológica REST</string>
-    <string name="pais">País</string>
-    <string name="ciudad">Ciudad</string>
-    <string name="titulo_soap">Calculadora SOAP</string>
-    <string name="valor1">Valor1</string>
-    <string name="valor2">Valor2</string>
-    <string name="resultado">Resultado</string>
-    <string name="amanecer">Amanecer</string>
-    <string name="presion">Presión</string>
-    <string name="temperatura">Temperatura</string>
-    <string name="viento">Viento</string>
-    <string name="ocaso">Ocaso</string>
-    <string name="hora">Hora</string>
-    <string name="visibilidad">Visibilidad</string>
-    <string name="humedad">Humedad</string>
+    <string name="app_name">MypCloud</string>
+    <string name="bienvenido">Bienvenido a My pCloud</string>
+    <string name="manten_salvo">Mantén a salvo tus archivos en la nube.</string>
+    <string name="registrate">¿No tienes una cuenta? Regístrate</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="login">Inicio de sesión</string>
+    <string name="int_mail_pass">Introduce email y contraseña para acceder  a tus archivos en la nube.</string>
+    <string name="email">Email</string>
+    <string name="contrasenia">Contraseña</string>
+    <string name="olvidaste">¿Olvidaste tu contraseña? Recupérala</string>
+    <string name="register">Registro de usuario</string>
+    <string name="texto_reg">Introduce email y contraseña para poder acceder a las ventajas que ofrece pcloud.</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="inicia">¿Ya tienes cuenta? Inicia sesion</string>
+    <string name="recuperar">Recuperar contraseña</string>
+    <string name="texto_correo">Introduce tu correo electrónico para poder recuperar tu contraseña.</string>
 </resources>
