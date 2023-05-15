@@ -32,32 +32,33 @@
         android:textAppearance="@style/iniciar_sesion" />
 
     <!-- Bienvenido a My pCloud -->
+
+    <!-- Mantén a salvo tus archivos en la nube. -->
     <TextView
         android:id="@+id/bienvenido_"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="60dp"
+        android:layout_marginLeft="42dp"
         android:layout_marginTop="52dp"
         android:gravity="top"
         android:text="@string/bienvenido"
         android:textAppearance="@style/titulo" />
 
-    <!-- Mantén a salvo tus archivos en la nube. -->
+    <!-- Imagen pcloud bienvenida -->
     <TextView
         android:id="@+id/mant_n_a_sa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="88dp"
+        android:layout_marginLeft="66dp"
         android:layout_marginTop="95dp"
         android:gravity="top"
         android:text="@string/manten_salvo"
         android:textAppearance="@style/subtitulo" />
 
-    <!-- Imagen pcloud bienvenida -->
     <View
         android:id="@+id/login_pclou"
         android:layout_width="274dp"
