@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="65dp"
+        android:layout_marginLeft="53dp"
         android:layout_marginTop="70dp"
         android:gravity="top"
         android:text="@string/recuperar"
@@ -27,68 +27,89 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="165dp"
+        android:layout_marginLeft="58dp"
+        android:layout_marginTop="158dp"
         android:gravity="top"
         android:text="@string/texto_correo"
         android:textAppearance="@style/subtitulo" />
 
+    <!-- Rectangle email -->
     <View
         android:id="@+id/rectangle_2"
         android:layout_width="252dp"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="71dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="226dp"
-        android:background="@drawable/rectangle_2"
-        />
+        android:layout_marginLeft="66dp"
+        android:layout_marginTop="225dp"
+        android:background="@drawable/rectangle_2" />
+
     <!-- Email -->
-    <TextView
+    <EditText
         android:id="@+id/email"
-        android:layout_width="41dp"
-        android:layout_height="19dp"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="89dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="237dp"
-        android:text="@string/email"
-        android:textAppearance="@style/email"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="236dp"
+        android:background="@null"
         android:gravity="top"
-        />
+        android:hint="@string/email"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="@style/email" />
 
-    <!-- Rectangle azul -->
-
-    <View
-        android:id="@+id/rectangle_1"
-        android:layout_width="252dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="84dp"
-        android:layout_marginTop="331dp"
-        android:background="@drawable/rectangle_azul" />
-
+    <!-- Texto blanco recuperar contra-->
     <TextView
         android:id="@+id/iniciar_ses"
         android:layout_width="168dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="129dp"
-        android:layout_marginTop="338dp"
+        android:layout_marginLeft="117dp"
+        android:layout_marginTop="339dp"
         android:gravity="top"
         android:text="@string/recuperar"
         android:textAppearance="@style/iniciar_sesion" />
 
-    <!-- Rectangle 4 -->
+    <!-- Rectangle azul -->
+    <View
+        android:id="@+id/rectangle_1"
+        android:layout_width="252dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="72dp"
+        android:layout_marginTop="332dp"
+        android:elevation="-2dp"
+        android:onClick="clicEnRecuperarContra"
+        android:background="@drawable/rectangle_azul" />
+
+    <!-- Rectangle marco exterior -->
     <View
         android:id="@+id/rectangle_4"
         android:layout_width="310dp"
         android:layout_height="176dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="131dp"
-        android:background="@drawable/rectangle_4" />
+        android:layout_marginLeft="39dp"
+        android:layout_marginTop="123dp"
+        android:background="@drawable/rectangle_marco" />
+
+    <!-- Volver a Inicia sesión-->
+    <TextView
+        android:id="@+id/inicia"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="82dp"
+        android:layout_marginTop="408dp"
+        android:gravity="top"
+        android:onClick="clicEnIniciarSesion"
+        android:text="¿Desea volver a iniciar sesión?"
+        android:textAppearance="@style/texto_normal"
+        android:textStyle="bold" />
 </RelativeLayout>
