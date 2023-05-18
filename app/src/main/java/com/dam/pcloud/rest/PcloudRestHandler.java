@@ -1,6 +1,15 @@
 package com.dam.pcloud.rest;
 
 import com.android.volley.RequestQueue;
+import com.dam.pcloud.rest.Error;
+import com.dam.pcloud.rest.ErrorCode;
+import com.dam.pcloud.rest.File;
+import com.dam.pcloud.rest.Folder;
+import com.dam.pcloud.rest.HandlerCallBack;
+import com.dam.pcloud.rest.HttpCallBack;
+import com.dam.pcloud.rest.HttpHandler;
+import com.dam.pcloud.rest.Item;
+import com.dam.pcloud.rest.ParameterHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-public class PcloudRestHandler implements IPcloudRestHandler{
+public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String API_ENDPOINT = "https://eapi.pcloud.com/";
 
     private static final String METHOD_REGISTER = "register";
@@ -65,14 +74,14 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
     private String auth_token;
 
-    private final HttpHandler http_handler;
+    private final com.dam.pcloud.rest.HttpHandler http_handler;
 
 
     public PcloudRestHandler(RequestQueue queue){
         http_handler = new HttpHandler(queue);
     }
 
-    private Folder createFolderFromJson(JSONObject json) throws JSONException {
+    private com.dam.pcloud.rest.Folder createFolderFromJson(JSONObject json) throws JSONException {
 
         String parent_folder_id;
         try {
@@ -81,27 +90,27 @@ public class PcloudRestHandler implements IPcloudRestHandler{
             parent_folder_id = "0";
         }
 
-        return new Folder(
+        return new com.dam.pcloud.rest.Folder(
                 json.getString(RESPONSE_FOLDER_ID),
                 parent_folder_id,
                 json.getString(RESPONSE_NAME),
-                Item.ItemType.FOLDER
+                com.dam.pcloud.rest.Item.ItemType.FOLDER
         );
     }
 
-    private File createFileFromJson(JSONObject json) throws JSONException {
+    private com.dam.pcloud.rest.File createFileFromJson(JSONObject json) throws JSONException {
         String contenttype = json.getString(RESPONSE_CONTENT_TYPE);
 
-        Item.ItemType type;
+        com.dam.pcloud.rest.Item.ItemType type;
         if(contenttype.contains("audio")){
-            type = Item.ItemType.AUDIO;
+            type = com.dam.pcloud.rest.Item.ItemType.AUDIO;
         } else if(contenttype.contains("image")){
-            type = Item.ItemType.IMAGE;
+            type = com.dam.pcloud.rest.Item.ItemType.IMAGE;
         } else { //File
-            type = Item.ItemType.FILE;
+            type = com.dam.pcloud.rest.Item.ItemType.FILE;
         }
 
-        return new File(
+        return new com.dam.pcloud.rest.File(
                 json.getString(RESPONSE_FILE_ID),
                 json.getString(RESPONSE_PARENT_FOLDER_ID),
                 json.getString(RESPONSE_NAME),
@@ -110,11 +119,11 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         );
     }
 
-    private ArrayList<Item> createChildrenFromJson(JSONArray json_array) throws JSONException {
-        ArrayList<Item> lst = new ArrayList<Item>();
+    private ArrayList<com.dam.pcloud.rest.Item> createChildrenFromJson(JSONArray json_array) throws JSONException {
+        ArrayList<com.dam.pcloud.rest.Item> lst = new ArrayList<com.dam.pcloud.rest.Item>();
         for (int i = 0; i<json_array.length(); i++){
             JSONObject json = (JSONObject)json_array.get(i);
-            Item item;
+            com.dam.pcloud.rest.Item item;
             if(json.getBoolean(RESPONSE_IS_FOLDER)){
                 item = createFolderFromJson(json);
             } else{
@@ -125,8 +134,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         return lst;
     }
 
-    private Error extractError(JSONObject json){
-        ErrorCode error;
+    private com.dam.pcloud.rest.Error extractError(JSONObject json){
+        com.dam.pcloud.rest.ErrorCode error;
         int result = -1;
         try{
             result = json.getInt(RESPONSE_RESULT);
@@ -134,7 +143,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
             e.printStackTrace();
         }
         try{
-            error = new ErrorCode(result, json.getString(RESPONSE_ERROR));
+            error = new com.dam.pcloud.rest.ErrorCode(result, json.getString(RESPONSE_ERROR));
         } catch (JSONException e){
             error = new ErrorCode(result, "Unknown");
         }
@@ -143,8 +152,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
 
 
-    public void register(String mail, String password, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void register(String mail, String password, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_MAIL, mail},
                 {PARAM_PASSWORD, password},
                 {PARAM_TERMSACCEPTED, "true"}
@@ -152,7 +161,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_REGISTER + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
@@ -166,12 +175,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    private void obtainDigest(HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{});
+    private void obtainDigest(com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{});
 
         String final_uri = API_ENDPOINT + METHOD_DIGEST + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
             public void onSuccess(JSONObject json) {
                 try {
                     String new_digest = json.getString(RESPONSE_DIGEST);
@@ -183,8 +192,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void login(String username, String password, HandlerCallBack callback) {
-        obtainDigest(new HandlerCallBack(){
+    public void login(String username, String password, com.dam.pcloud.rest.HandlerCallBack callback) {
+        obtainDigest(new com.dam.pcloud.rest.HandlerCallBack(){
             @Override
             public void onSuccess(Object obj) {
                 String digest = (String)obj;
@@ -205,7 +214,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 //            Ignore: code unreachable
                 }
 
-                String parameters = ParameterHandler.parseRequest(new String[][]{
+                String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                         {PARAM_USERNAME, username},
                         {PARAM_DIGEST, digest},
                         {PARAM_GET_AUTH, Integer.toString(1)},
@@ -214,7 +223,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
                 String final_uri = API_ENDPOINT + METHOD_LOGIN_DIGEST + parameters;
 
-                http_handler.getRequest(final_uri, new HttpCallBack() {
+                http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
                     @Override
                     public void onSuccess(JSONObject json) {
@@ -236,15 +245,15 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void recover_password(String mail, HandlerCallBack callback) {
+    public void recover_password(String mail, com.dam.pcloud.rest.HandlerCallBack callback) {
 
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_MAIL, mail}
         });
 
         String final_uri = API_ENDPOINT + METHOD_LOST_PASSWORD + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
@@ -258,8 +267,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void folder_create(String folder_id, String name, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void folder_create(String folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_NAME, name},
                 {PARAM_AUTH, this.auth_token}
@@ -267,12 +276,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_CREATE_FOLDER + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -281,8 +290,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void folder_rename(String folder_id, String new_name, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void folder_rename(String folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_NAME, new_name},
                 {PARAM_AUTH, this.auth_token}
@@ -290,12 +299,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FOLDER_RENAME + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -304,8 +313,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void folder_move(String folder_id, String new_parent_id, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void folder_move(String folder_id, String new_parent_id, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_FOLDER_ID, new_parent_id},
                 {PARAM_AUTH, this.auth_token}
@@ -313,12 +322,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FOLDER_RENAME + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -327,8 +336,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void folder_copy(String folder_id, String new_parent_id, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void folder_copy(String folder_id, String new_parent_id, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_FOLDER_ID, new_parent_id},
                 {PARAM_AUTH, this.auth_token}
@@ -336,12 +345,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FOLDER_COPY + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -351,20 +360,20 @@ public class PcloudRestHandler implements IPcloudRestHandler{
     }
 
 
-    public void folder_delete(String folder_id, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void folder_delete(String folder_id, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_AUTH, this.auth_token}
         });
 
         String final_uri = API_ENDPOINT + METHOD_FOLDER_DELETE + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -373,7 +382,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void folder_list(String folder_id, HandlerCallBack callback) {
+    public void folder_list(String folder_id, com.dam.pcloud.rest.HandlerCallBack callback) {
         /* Manda las instrucciones para restablecer la contraseña al correo.
 
         Requiere auth.
@@ -383,20 +392,20 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         @param name nombre del directorio a crear
         */
 
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_AUTH, this.auth_token}
         });
 
         String final_uri = API_ENDPOINT + METHOD_FOLDER_LIST + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
                     Folder folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
-                    ArrayList<Item> children = createChildrenFromJson(json.getJSONObject(RESPONSE_DATA).getJSONArray(RESPONSE_CONTENTS));
+                    ArrayList<com.dam.pcloud.rest.Item> children = createChildrenFromJson(json.getJSONObject(RESPONSE_DATA).getJSONArray(RESPONSE_CONTENTS));
                     folder.setChildren(children);
                     callback.onSuccess(folder);
                 } catch (JSONException e) {
@@ -406,36 +415,36 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
-//        TODO terminar. No sé descargar ficheros en http. Mirar: https://stackoverflow.com/questions/73759126/download-files-with-the-pcloud-api
+//    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
+////        TODO terminar. No sé descargar ficheros en http. Mirar: https://stackoverflow.com/questions/73759126/download-files-with-the-pcloud-api
+//
+//        String parameters = ParameterHandler.parseRequest(new String[][]{
+//                {PARAM_FOLDER_ID, folder_id},
+//                {PARAM_FILE_NAME, file_name},
+//                {PARAM_AUTH, this.auth_token}
+//        });
+//
+//        String final_uri = API_ENDPOINT + METHOD_FILE_DOWNLOAD + parameters;
+//
+//        http_handler.getRequest(final_uri, new HttpCallBack() {
+//
+//            @Override
+//            public void onSuccess(JSONObject json) {
+//                try {
+//                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
+//                    callback.onSuccess(new_folder);
+//                } catch (JSONException e) {
+//                    callback.onError(extractError(json));
+//                }
+//            }
+//        });
+//    }
 
-        String parameters = ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
-                {PARAM_FILE_NAME, file_name},
-                {PARAM_AUTH, this.auth_token}
-        });
-
-        String final_uri = API_ENDPOINT + METHOD_FILE_DOWNLOAD + parameters;
-
-        http_handler.getRequest(final_uri, new HttpCallBack() {
-
-            @Override
-            public void onSuccess(JSONObject json) {
-                try {
-                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
-                    callback.onSuccess(new_folder);
-                } catch (JSONException e) {
-                    callback.onError(extractError(json));
-                }
-            }
-        });
-    }
-
-    public void file_upload(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
+    public void file_upload(String folder_id, String file_name, String local_file_path, com.dam.pcloud.rest.HandlerCallBack callback) {
 
 //        TODO terminar. No sé subir ficheros en http. Mirar: https://docs.pcloud.com/structures/file_descriptors.html
 
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_FILE_NAME, file_name},
                 {PARAM_AUTH, this.auth_token}
@@ -443,7 +452,7 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FILE_UPLOAD + parameters;
 
-        http_handler.postRequest(final_uri, local_file_path, new HttpCallBack() {
+        http_handler.postRequest(final_uri, local_file_path, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
@@ -458,8 +467,8 @@ public class PcloudRestHandler implements IPcloudRestHandler{
     }
 
 
-    public void file_copy(String file_id, String to_folder_id, String name, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void file_copy(String file_id, String to_folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FILE_ID, file_id},
                 {PARAM_TO_FOLDER_ID, to_folder_id},
                 {PARAM_TO_NAME, name},
@@ -468,12 +477,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FILE_COPY + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -483,20 +492,20 @@ public class PcloudRestHandler implements IPcloudRestHandler{
     }
 
 
-    public void file_delete(String file_id, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void file_delete(String file_id, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FILE_ID, file_id},
                 {PARAM_AUTH, this.auth_token}
         });
 
         String final_uri = API_ENDPOINT + METHOD_FILE_DELETE + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
@@ -505,12 +514,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
         });
     }
 
-    public void file_rename(String file_id, String new_name, HandlerCallBack callback) {
+    public void file_rename(String file_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {
         this.file_move(file_id, file_id, new_name, callback);
     }
 
-    public void file_move(String file_id, String to_folder_id, String new_name, HandlerCallBack callback) {
-        String parameters = ParameterHandler.parseRequest(new String[][]{
+    public void file_move(String file_id, String to_folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {
+        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FILE_ID, file_id},
                 {PARAM_TO_FOLDER_ID, to_folder_id},
                 {PARAM_TO_NAME, new_name},
@@ -519,12 +528,12 @@ public class PcloudRestHandler implements IPcloudRestHandler{
 
         String final_uri = API_ENDPOINT + METHOD_FILE_RENAME + parameters;
 
-        http_handler.getRequest(final_uri, new HttpCallBack() {
+        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
+                    com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
