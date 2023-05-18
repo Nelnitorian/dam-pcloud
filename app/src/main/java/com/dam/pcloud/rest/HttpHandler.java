@@ -23,6 +23,25 @@ public class HttpHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        callback.onError();
+                    }
+                });
+        // add the request object to the queue to be executed
+        queue.add(request);
+    }
+
+    public void postRequest (String uri, String local_file_path, HttpCallBack callback) {
+//        TODO esta copiado de get. No funciona.
+        JSONObject response = null;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, uri, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
                         try{
                             int codigo=response.getInt("cod");
                             if(codigo==200){
@@ -37,11 +56,11 @@ public class HttpHandler {
                         }
                     }
                 }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 //                        callback.onError();
-                    }
-                });
+            }
+        });
         // add the request object to the queue to be executed
         queue.add(request);
     }
