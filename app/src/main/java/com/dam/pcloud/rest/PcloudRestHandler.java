@@ -150,6 +150,15 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         return error;
     }
 
+    private boolean checkForError(JSONObject json){
+        int code = -1;
+        try {
+            code = json.getInt(RESPONSE_RESULT);
+        } catch (JSONException e) {
+            return true;
+        }
+        return code != 0;
+    }
 
 
     public void register(String mail, String password, com.dam.pcloud.rest.HandlerCallBack callback) {
@@ -165,6 +174,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     Integer status_code = json.getInt(RESPONSE_RESULT);
                     callback.onSuccess(status_code);
@@ -182,6 +195,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
         http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     String new_digest = json.getString(RESPONSE_DIGEST);
                     callback.onSuccess(new_digest);
@@ -227,6 +244,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
                     @Override
                     public void onSuccess(JSONObject json) {
+                        if (checkForError(json)){
+                            callback.onError(extractError(json));
+                            return;
+                        }
                         try {
                             auth_token = json.getString(RESPONSE_AUTH);
                             Integer status_code = json.getInt(RESPONSE_RESULT);
@@ -257,6 +278,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     Integer status_code = json.getInt(RESPONSE_RESULT);
                     callback.onSuccess(status_code);
@@ -280,6 +305,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
@@ -303,6 +332,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
@@ -326,6 +359,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
@@ -349,6 +386,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
@@ -372,6 +413,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
@@ -403,6 +448,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     Folder folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     ArrayList<com.dam.pcloud.rest.Item> children = createChildrenFromJson(json.getJSONObject(RESPONSE_DATA).getJSONArray(RESPONSE_CONTENTS));
@@ -456,6 +505,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     ArrayList<Item> children = createChildrenFromJson(json.getJSONArray(RESPONSE_DATA));
                     callback.onSuccess(children);
@@ -481,6 +534,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
@@ -504,6 +561,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
@@ -532,6 +593,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     com.dam.pcloud.rest.File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
@@ -555,6 +620,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
             @Override
             public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
                 try {
                     File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
