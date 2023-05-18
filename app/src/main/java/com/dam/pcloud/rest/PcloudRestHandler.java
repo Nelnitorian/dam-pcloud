@@ -21,17 +21,17 @@ public class PcloudRestHandler {
     private static final String METHOD_LOGIN_DIGEST = "userinfo";
     private static final String METHOD_USER_INFO = "userinfo";
     private static final String METHOD_CREATE_FOLDER = "createfolder";
-    private static final String METHOD_LOST_PASSOWRD = "lostpassword";
-    private static final String METHOD_RENAME_FOLDER = "renamefolder";
-    private static final String METHOD_COPY_FOLDER = "copyfolder";
-    private static final String METHOD_DELETE_FOLDER = "deletefolder";
-    private static final String METHOD_LIST_FOLDER = "listfolder";
-    private static final String METHOD_UPLOAD_FILE = "uploadfile";
-    private static final String METHOD_DOWNLOAD_FILE = "downloadfile";
-    private static final String METHOD_RENAME_FILE = "renamefile";
-    private static final String METHOD_STAT_FILE = "stat";
-    private static final String METHOD_DELETE_FILE = "deletefile";
-    private static final String METHOD_COPY_FILE = "copyfile";
+    private static final String METHOD_LOST_PASSWORD = "lostpassword";
+    private static final String METHOD_FOLDER_RENAME = "renamefolder";
+    private static final String METHOD_FOLDER_COPY = "copyfolder";
+    private static final String METHOD_FOLDER_DELETE = "deletefolder";
+    private static final String METHOD_FOLDER_LIST = "listfolder";
+    private static final String METHOD_FILE_UPLOAD = "uploadfile";
+    private static final String METHOD_FILE_DOWNLOAD = "downloadfile";
+    private static final String METHOD_FILE_RENAME = "renamefile";
+    private static final String METHOD_FILE_STAT = "stat";
+    private static final String METHOD_FILE_DELETE = "deletefile";
+    private static final String METHOD_FILE_COPY = "copyfile";
 
     private static final String PARAM_MAIL = "mail";
     private static final String PARAM_PASSWORD = "password";
@@ -62,18 +62,6 @@ public class PcloudRestHandler {
     private static final String RESPONSE_AUTH = "auth";
 
 
-
-
-
-
-//    private static final String PARAM_
-
-
-
-
-
-    private String client_id;
-    private String client_secret;
     private String auth_token;
 
     private final HttpHandler http_handler;
@@ -84,27 +72,6 @@ public class PcloudRestHandler {
     }
 
     private Folder createFolderFromJson(JSONObject json) throws JSONException {
-
-        try {
-            Log.d("LISTFOLDER", "Folder RESPONSE_FOLDER_ID: " + json.getString(RESPONSE_FOLDER_ID));
-
-        } catch (JSONException e) {
-            Log.d("LISTFOLDER", "ERROR RESPONSE_FOLDER_ID");
-        }
-
-        try {
-            Log.d("LISTFOLDER", "Folder RESPONSE_PARENT_FOLDER_ID: " + json.getString(RESPONSE_PARENT_FOLDER_ID));
-
-        } catch (JSONException e) {
-            Log.d("LISTFOLDER", "ERROR RESPONSE_PARENT_FOLDER_ID");
-        }
-
-        try {
-            Log.d("LISTFOLDER", "Folder RESPONSE_NAME: " + json.getString(RESPONSE_NAME));
-
-        } catch (JSONException e) {
-            Log.d("LISTFOLDER", "ERROR RESPONSE_NAME");
-        }
 
         String parent_folder_id;
         try {
@@ -133,34 +100,6 @@ public class PcloudRestHandler {
             type = Item.ItemType.FILE;
         }
 
-        try{
-            Log.d("LISTFOLDER", "Folder RESPONSE_FILE_ID: "+json.getString(RESPONSE_FILE_ID));
-
-        } catch (JSONException e){
-            Log.d("LISTFOLDER", "ERROR RESPONSE_FILE_ID");
-        }
-
-        try{
-            Log.d("LISTFOLDER", "Folder RESPONSE_PARENT_FOLDER_ID: "+json.getString(RESPONSE_PARENT_FOLDER_ID));
-
-        } catch (JSONException e){
-            Log.d("LISTFOLDER", "ERROR RESPONSE_PARENT_FOLDER_ID");
-        }
-
-        try{
-            Log.d("LISTFOLDER", "Folder RESPONSE_NAME: "+json.getString(RESPONSE_NAME));
-
-        } catch (JSONException e){
-            Log.d("LISTFOLDER", "ERROR RESPONSE_NAME");
-        }
-
-        try{
-            Log.d("LISTFOLDER", "Folder RESPONSE_SIZE: "+json.getInt(RESPONSE_SIZE));
-
-        } catch (JSONException e){
-            Log.d("LISTFOLDER", "ERROR RESPONSE_SIZE");
-        }
-
         return new File(
                 json.getString(RESPONSE_FILE_ID),
                 json.getString(RESPONSE_PARENT_FOLDER_ID),
@@ -171,18 +110,13 @@ public class PcloudRestHandler {
     }
 
     private ArrayList<Item> createChildrenFromJson(JSONArray json_array) throws JSONException {
-        Log.d("LISTFOLDER", "entrando en createChildrenFromJson");
-        Log.d("LISTFOLDER", "info recibida: "+json_array.toString());
         ArrayList<Item> lst = new ArrayList<Item>();
         for (int i = 0; i<json_array.length(); i++){
             JSONObject json = (JSONObject)json_array.get(i);
-            Log.d("LISTFOLDER", "trabajando con: "+json.toString());
             Item item;
             if(json.getBoolean(RESPONSE_IS_FOLDER)){
-                Log.d("LISTFOLDER", "se ha considerado folder");
                 item = createFolderFromJson(json);
             } else{
-                Log.d("LISTFOLDER", "se ha considerado file");
                 item = createFileFromJson(json);
             }
             lst.add(item);
@@ -268,12 +202,10 @@ public class PcloudRestHandler {
         @param username nombre de usuario
         @param password contraseña del usuario
         */
-        Log.d("LOGIN", "Entrando en login");
         obtainDigest(new HandlerCallBack(){
             @Override
             public void onSuccess(Object obj) {
                 String digest = (String)obj;
-                Log.d("LOGIN", "Digest obtenido: "+digest);
 
                 String passworddigest = "";
                 try {
@@ -290,7 +222,6 @@ public class PcloudRestHandler {
                 } catch (NoSuchAlgorithmException e) {
 //            Ignore: code unreachable
                 }
-                Log.d("LOGIN", "Password calculado: "+passworddigest);
 
                 String parameters = ParameterHandler.parseRequest(new String[][]{
                         {PARAM_USERNAME, username},
@@ -299,20 +230,14 @@ public class PcloudRestHandler {
                         {PARAM_PASSWORD_DIGEST, passworddigest}
                 });
 
-                Log.d("LOGIN", "Parametros: "+parameters);
-
                 String final_uri = API_ENDPOINT + METHOD_LOGIN_DIGEST + parameters;
-
-                Log.d("LOGIN", "URL final: "+final_uri);
 
                 http_handler.getRequest(final_uri, new HttpCallBack() {
 
                     @Override
                     public void onSuccess(JSONObject json) {
                         try {
-                            Log.d("LOGIN", "Respuesta: "+json.toString());
                             auth_token = json.getString(RESPONSE_AUTH);
-                            Log.d("LOGIN", "Token auth: "+json.getString(RESPONSE_AUTH));
                             Integer status_code = json.getInt(RESPONSE_RESULT);
                             callback.onSuccess(status_code);
                         } catch (JSONException e) {
@@ -340,7 +265,7 @@ public class PcloudRestHandler {
                 {PARAM_MAIL, mail}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_LOST_PASSOWRD + parameters;
+        String final_uri = API_ENDPOINT + METHOD_LOST_PASSWORD + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -404,7 +329,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_RENAME_FOLDER + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FOLDER_RENAME + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -436,7 +361,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_RENAME_FOLDER + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FOLDER_RENAME + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -468,7 +393,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_COPY_FOLDER + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FOLDER_COPY + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -500,7 +425,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_DELETE_FOLDER + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FOLDER_DELETE + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -531,18 +456,14 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_LIST_FOLDER + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FOLDER_LIST + parameters;
 
-
-        Log.d("LISTFOLDER", "URL final: "+final_uri);
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
                 try {
-                    Log.d("LISTFOLDER", "Respuesta: "+json);
                     Folder folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
-                    Log.d("LISTFOLDER", "Folder rescatado: "+folder.getName());
                     ArrayList<Item> children = createChildrenFromJson(json.getJSONObject(RESPONSE_DATA).getJSONArray(RESPONSE_CONTENTS));
                     folder.setChildren(children);
                     callback.onSuccess(folder);
@@ -571,7 +492,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_DOWNLOAD_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_DOWNLOAD + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -605,7 +526,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_UPLOAD_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_UPLOAD + parameters;
 
         http_handler.postRequest(final_uri, local_file_path, new HttpCallBack() {
 
@@ -639,7 +560,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_COPY_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_COPY + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -671,7 +592,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_DELETE_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_DELETE + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -704,7 +625,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_RENAME_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_RENAME + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
@@ -735,7 +656,7 @@ public class PcloudRestHandler {
                 {PARAM_AUTH, this.auth_token}
         });
 
-        String final_uri = API_ENDPOINT + METHOD_STAT_FILE + parameters;
+        String final_uri = API_ENDPOINT + METHOD_FILE_STAT + parameters;
 
         http_handler.getRequest(final_uri, new HttpCallBack() {
 
