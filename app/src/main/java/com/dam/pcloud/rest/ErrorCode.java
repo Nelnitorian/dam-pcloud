@@ -1,6 +1,6 @@
 package com.dam.pcloud.rest;
 
-public class ErrorCode {
+public class ErrorCode implements Error {
     private int code;
     private String description;
 

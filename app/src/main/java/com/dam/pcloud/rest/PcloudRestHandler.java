@@ -1,7 +1,5 @@
 package com.dam.pcloud.rest;
 
-import android.util.Log;
-
 import com.android.volley.RequestQueue;
 
 import org.json.JSONArray;
@@ -13,13 +11,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-public class PcloudRestHandler {
+public class PcloudRestHandler implements IPcloudRestHandler{
     private static final String API_ENDPOINT = "https://eapi.pcloud.com/";
 
     private static final String METHOD_REGISTER = "register";
     private static final String METHOD_DIGEST = "getdigest";
     private static final String METHOD_LOGIN_DIGEST = "userinfo";
-    private static final String METHOD_USER_INFO = "userinfo";
+//    private static final String METHOD_USER_INFO = "userinfo";
     private static final String METHOD_CREATE_FOLDER = "createfolder";
     private static final String METHOD_LOST_PASSWORD = "lostpassword";
     private static final String METHOD_FOLDER_RENAME = "renamefolder";
@@ -46,6 +44,9 @@ public class PcloudRestHandler {
     private static final String PARAM_TO_FOLDER_ID ="tofolderid";
     private static final String PARAM_FILE_NAME ="filename";
     private static final String PARAM_GET_AUTH ="getauth";
+    private static final String PARAM_FILE_ID ="fileid";
+
+
     private static final String RESPONSE_ERROR ="error";
 
     private static final String RESPONSE_RESULT = "result";
@@ -124,7 +125,7 @@ public class PcloudRestHandler {
         return lst;
     }
 
-    private ErrorCode extractError(JSONObject json){
+    private Error extractError(JSONObject json){
         ErrorCode error;
         int result = -1;
         try{
@@ -143,12 +144,6 @@ public class PcloudRestHandler {
 
 
     public void register(String mail, String password, HandlerCallBack callback) {
-        /* Registra un usuario
-
-        @param callback objeto de callback que gestionará el resultado
-        @param mail correo electronico del usuario
-        @param password contraseña del usuario
-        */
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_MAIL, mail},
                 {PARAM_PASSWORD, password},
@@ -171,14 +166,7 @@ public class PcloudRestHandler {
         });
     }
 
-    public void obtainDigest(HandlerCallBack callback) {
-
-        /* Obtiene el código temporal de digest
-
-        @throws InterruptedException si se ha producido alguna excepción mientras se produce la petición
-        @return código digest
-        */
-
+    private void obtainDigest(HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{});
 
         String final_uri = API_ENDPOINT + METHOD_DIGEST + parameters;
@@ -189,19 +177,13 @@ public class PcloudRestHandler {
                     String new_digest = json.getString(RESPONSE_DIGEST);
                     callback.onSuccess(new_digest);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
     public void login(String username, String password, HandlerCallBack callback) {
-        /* Inicia sesión usando el flujo de password digest
-
-        @param callback objeto de callback que gestionará el resultado
-        @param username nombre de usuario
-        @param password contraseña del usuario
-        */
         obtainDigest(new HandlerCallBack(){
             @Override
             public void onSuccess(Object obj) {
@@ -241,25 +223,20 @@ public class PcloudRestHandler {
                             Integer status_code = json.getInt(RESPONSE_RESULT);
                             callback.onSuccess(status_code);
                         } catch (JSONException e) {
-                            callback.onError(extractError(json));;
+                            callback.onError(extractError(json));
                         }
                     }
                 });
             }
             @Override
-            public void onError(ErrorCode error){
-                callback.onError(error);;
+            public void onError(Error error){
+                callback.onError(error);
             }
 
         });
     }
 
     public void recover_password(String mail, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param mail correo al que se mandará la información
-        */
 
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_MAIL, mail}
@@ -275,22 +252,13 @@ public class PcloudRestHandler {
                     Integer status_code = json.getInt(RESPONSE_RESULT);
                     callback.onSuccess(status_code);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void create_folder(String folder_id, String name, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void folder_create(String folder_id, String name, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_NAME, name},
@@ -307,22 +275,13 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void rename_folder(String folder_id, String new_name, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void folder_rename(String folder_id, String new_name, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_NAME, new_name},
@@ -339,22 +298,13 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void move_folder(String folder_id, String new_parent_id, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void folder_move(String folder_id, String new_parent_id, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_FOLDER_ID, new_parent_id},
@@ -371,22 +321,13 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void copy_folder(String folder_id, String new_parent_id, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void folder_copy(String folder_id, String new_parent_id, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_TO_FOLDER_ID, new_parent_id},
@@ -403,23 +344,14 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
 
-    public void delete_folder(String folder_id, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void folder_delete(String folder_id, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
                 {PARAM_AUTH, this.auth_token}
@@ -435,13 +367,13 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void listfolder(String folder_id, HandlerCallBack callback) {
+    public void folder_list(String folder_id, HandlerCallBack callback) {
         /* Manda las instrucciones para restablecer la contraseña al correo.
 
         Requiere auth.
@@ -468,22 +400,13 @@ public class PcloudRestHandler {
                     folder.setChildren(children);
                     callback.onSuccess(folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void downloadfile(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
 //        TODO terminar. No sé descargar ficheros en http. Mirar: https://stackoverflow.com/questions/73759126/download-files-with-the-pcloud-api
 
         String parameters = ParameterHandler.parseRequest(new String[][]{
@@ -502,23 +425,15 @@ public class PcloudRestHandler {
                     Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_folder);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void uploadfile(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
+    public void file_upload(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
 
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
-//        TODO terminar. No sé subir ficheros en http
+//        TODO terminar. No sé subir ficheros en http. Mirar: https://docs.pcloud.com/structures/file_descriptors.html
 
         String parameters = ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
@@ -536,25 +451,16 @@ public class PcloudRestHandler {
                     ArrayList<Item> children = createChildrenFromJson(json.getJSONArray(RESPONSE_DATA));
                     callback.onSuccess(children);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
 
-    public void copyfile(String folder_id, String to_folder_id, String name, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void file_copy(String file_id, String to_folder_id, String name, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
+                {PARAM_FILE_ID, file_id},
                 {PARAM_TO_FOLDER_ID, to_folder_id},
                 {PARAM_TO_NAME, name},
                 {PARAM_AUTH, this.auth_token}
@@ -570,25 +476,16 @@ public class PcloudRestHandler {
                     File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
 
-    public void deletefile(String folder_id, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void file_delete(String file_id, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
+                {PARAM_FILE_ID, file_id},
                 {PARAM_AUTH, this.auth_token}
         });
 
@@ -602,26 +499,21 @@ public class PcloudRestHandler {
                     File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void renamefile(String folder_id, String to_folder_id, String name, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
+    public void file_rename(String file_id, String new_name, HandlerCallBack callback) {
+        this.file_move(file_id, file_id, new_name, callback);
+    }
 
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
-
+    public void file_move(String file_id, String to_folder_id, String new_name, HandlerCallBack callback) {
         String parameters = ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
+                {PARAM_FILE_ID, file_id},
                 {PARAM_TO_FOLDER_ID, to_folder_id},
-                {PARAM_TO_NAME, name},
+                {PARAM_TO_NAME, new_name},
                 {PARAM_AUTH, this.auth_token}
         });
 
@@ -635,24 +527,16 @@ public class PcloudRestHandler {
                     File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
     }
 
-    public void statfile(String folder_id, HandlerCallBack callback) {
-        /* Manda las instrucciones para restablecer la contraseña al correo.
-
-        Requiere auth.
-
-        @param callback objeto de callback que gestionará el resultado
-        @param folder_id id del directorio padre
-        @param name nombre del directorio a crear
-        */
+    public void file_stat(String file_id, HandlerCallBack callback) {
 
         String parameters = ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
+                {PARAM_FILE_ID, file_id},
                 {PARAM_AUTH, this.auth_token}
         });
 
@@ -666,7 +550,7 @@ public class PcloudRestHandler {
                     File new_file = createFileFromJson(json.getJSONObject(RESPONSE_DATA));
                     callback.onSuccess(new_file);
                 } catch (JSONException e) {
-                    callback.onError(extractError(json));;
+                    callback.onError(extractError(json));
                 }
             }
         });
