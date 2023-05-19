@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- register -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clipToOutline="true">
+
+    <!-- Registro de usuario -->
+    <TextView
+        android:id="@+id/reg_usu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="58dp"
+        android:gravity="top"
+        android:text="@string/register"
+        android:textAppearance="@style/titulo" />
+
+    <!-- Introduce email y contra etc -->
+    <TextView
+        android:id="@+id/introduce_e"
+        android:layout_width="274dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="69dp"
+        android:layout_marginTop="124dp"
+        android:gravity="top"
+        android:text="@string/texto_reg"
+        android:textAppearance="@style/subtitulo" />
+
+    <!-- Rectangle 2 -->
+    <View
+        android:id="@+id/rectangle_2"
+        android:layout_width="252dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="71dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="226dp"
+        android:background="@drawable/rectangle_2"
+        />
+    <!-- Email -->
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="41dp"
+        android:layout_height="19dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="89dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="237dp"
+        android:text="@string/email"
+        android:textAppearance="@style/email"
+        android:gravity="top"
+        />
+
+    <!-- Rectangle 3 -->
+    <View
+        android:id="@+id/rectangle_3"
+        android:layout_width="252dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="71dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="296dp"
+        android:background="@drawable/rectangle_3"
+        />
+    <!-- Contraseña -->
+    <TextView
+        android:id="@+id/contrasenia"
+        android:layout_width="88dp"
+        android:layout_height="19dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="89dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="307dp"
+        android:text="@string/contrasenia"
+        android:textAppearance="@style/email"
+        android:gravity="top"
+        />
+
+    <!-- Rectangle azul -->
+    <View
+        android:id="@+id/rectangle_1"
+        android:layout_width="252dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="73dp"
+        android:layout_marginTop="418dp"
+        android:background="@drawable/rectangle_azul" />
+    <!-- Registrarse-->
+    <TextView
+        android:id="@+id/inicia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="89dp"
+        android:layout_marginTop="474dp"
+        android:gravity="top"
+        android:text="@string/inicia"
+        android:textAppearance="@style/texto_normal" />
+
+    <!-- Ya tienes cuenta? Inicia sesión-->
+    <TextView
+        android:id="@+id/iniciar_ses"
+        android:layout_width="93dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="156dp"
+        android:layout_marginTop="427dp"
+        android:gravity="top"
+        android:text="@string/registrarse"
+        android:textAppearance="@style/iniciar_sesion" />
+
+</RelativeLayout>
