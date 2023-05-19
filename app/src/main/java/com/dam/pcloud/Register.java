@@ -39,8 +39,6 @@ public class Register extends AppCompatActivity {
         email= (EditText)findViewById(R.id.email);
         contrasenia= (EditText)findViewById(R.id.contrasenia);
         Log.d(LOG_TAG, "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
-
-        //LLAMAR AL MÉTODO DE LOGIN
         handler.register(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
@@ -58,6 +56,5 @@ public class Register extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error "+error.getCode()+" al registrarse: "+error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }
