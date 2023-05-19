@@ -8,11 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -76,14 +76,22 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String RESPONSE_AUTH = "auth";
     private static final String RESPONSE_FD = "fd";
 
+    private static final String CONFIG_AUTH_EXPIRES = "expires";
+    private static final String CONFIG_AUTH_TOKEN = "token";
+    private static final String CONFIG_AUTH_TOKEN_ID = "token_id";
+
+    private static final String CONFIG_AUTH_FILE_PATH = "/data/user/0/com.dam.pcloud/files/auth.conf";
+
+
 
     private String auth_token;
 
-    private final com.dam.pcloud.rest.HttpHandler http_handler;
+    private final HttpHandler http_handler;
 
 
     public PcloudRestHandler(RequestQueue queue){
         http_handler = new HttpHandler(queue);
+        auth_token = retrieveAuthToken();
     }
 
     private void file_open_new(String folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback) {
@@ -145,7 +153,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
                 sb.append(in.next());
             }
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            Log.e("PcloudRestHandler", "No se ha encontrado el archivo: "+path);
         }
         return sb.toString();
     }
@@ -319,6 +327,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
                         }
                         try {
                             auth_token = json.getString(RESPONSE_AUTH);
+                            updateAuthToken(auth_token);
                             Integer status_code = json.getInt(RESPONSE_RESULT);
                             callback.onSuccess(status_code);
                         } catch (JSONException e) {
@@ -703,4 +712,32 @@ public class PcloudRestHandler implements IPcloudRestHandler {
             }
         });
     }
+
+
+    public boolean alreadyLogged(){
+        return !auth_token.isEmpty();
+    }
+
+    private String retrieveAuthToken(){
+        try {
+            String string_json = readFile(CONFIG_AUTH_FILE_PATH);
+            JSONObject obj = new JSONObject(string_json);
+            return obj.getString(CONFIG_AUTH_TOKEN);
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
+    private void updateAuthToken(String token){
+        try {
+            JSONObject json = new JSONObject();
+            json.put(CONFIG_AUTH_TOKEN, token);
+            FileWriter file = new FileWriter(CONFIG_AUTH_FILE_PATH);
+            file.write(json.toString());
+            file.close();
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -24,6 +24,7 @@ public class HttpHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d("HTTPHANDLER", response.toString());
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {

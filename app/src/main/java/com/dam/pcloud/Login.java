@@ -9,11 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.toolbox.Volley;
 import com.dam.pcloud.rest.Error;
 import com.dam.pcloud.rest.HandlerCallBack;
 import com.dam.pcloud.rest.IPcloudRestHandler;
-import com.dam.pcloud.rest.PcloudRestHandler;
 
 public class Login extends AppCompatActivity {
 
@@ -26,9 +24,14 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
-        Log.d(LOG_TAG, "Pidiendo handler");
         this.handler = MypCloud.getInstance().getHandler();
+        if(handler.alreadyLogged()){
+            Intent intent = new Intent(getApplicationContext(), Inicio.class);
+            startActivity(intent);
+        } else {
+            setContentView(R.layout.login);
+            Log.d(LOG_TAG, "Pidiendo handler");
+        }
     }
 
     public void clicEnRecuperarContra(View view) {

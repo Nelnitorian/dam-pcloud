@@ -203,4 +203,9 @@ public interface IPcloudRestHandler {
      @param callback objeto de callback que gestionará el resultado
     */
     public void file_stat(String file_id, HandlerCallBack callback);
+
+    /** Comprueba si el usuario ya ha iniciado sesión.
+     */
+    public boolean alreadyLogged();
+
 }
