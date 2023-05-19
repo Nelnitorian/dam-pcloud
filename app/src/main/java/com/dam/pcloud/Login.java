@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        this.handler = new PcloudRestHandler(Volley.newRequestQueue(this));
+        this.handler = MypCloud.getInstance().getHandler();
     }
 
     public void clicEnRecuperarContra(View view) {
@@ -39,11 +39,11 @@ public class Login extends AppCompatActivity {
         contrasenia= (EditText)findViewById(R.id.contrasenia);
         Log.d("Inicio_sesion", "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
 
-        //LLAMAR AL MÉTODO DE LOGIN
         handler.login(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 // Exito
+                Log.d("Inicio_sesion", "Login exitoso!");
                 Intent intent = new Intent(getApplicationContext(), Inicio.class);
                 startActivity(intent);
             }

@@ -23,7 +23,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        this.handler = new PcloudRestHandler(Volley.newRequestQueue(this));
+        this.handler = MypCloud.getInstance().getHandler();
     }
 
 
