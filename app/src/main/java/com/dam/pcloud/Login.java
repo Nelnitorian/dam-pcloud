@@ -18,14 +18,15 @@ public class Login extends AppCompatActivity {
 
     private EditText email;
     private EditText contrasenia;
-
     private IPcloudRestHandler handler;
+    private static final String LOG_TAG = "Inicio_sesion";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        Log.d(LOG_TAG, "Pidiendo handler");
         this.handler = MypCloud.getInstance().getHandler();
     }
 
@@ -37,13 +38,13 @@ public class Login extends AppCompatActivity {
         //Recuperamos los valores introducidos por el usuario
         email= (EditText)findViewById(R.id.email);
         contrasenia= (EditText)findViewById(R.id.contrasenia);
-        Log.d("Inicio_sesion", "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
+        Log.d(LOG_TAG, "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
 
         handler.login(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 // Exito
-                Log.d("Inicio_sesion", "Login exitoso!");
+                Log.d(LOG_TAG, "Login exitoso");
                 Intent intent = new Intent(getApplicationContext(), Inicio.class);
                 startActivity(intent);
             }
@@ -51,6 +52,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onError(Error error) {
                 // Error
+                Log.d(LOG_TAG, "Error "+error.getCode()+" al iniciar sesión: "+error.getDescription());
                 Toast.makeText(getApplicationContext(), "Error "+error.getCode()+" al iniciar sesión: "+error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });

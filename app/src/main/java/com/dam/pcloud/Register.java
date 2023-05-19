@@ -18,11 +18,13 @@ public class Register extends AppCompatActivity {
     private EditText email;
     private EditText contrasenia;
     private IPcloudRestHandler handler;
+    private static final String LOG_TAG = "Registro";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        Log.d(LOG_TAG, "Pidiendo handler");
         this.handler = MypCloud.getInstance().getHandler();
     }
 
@@ -35,13 +37,14 @@ public class Register extends AppCompatActivity {
         //Recuperamos los valores introducidos por el usuario
         email= (EditText)findViewById(R.id.email);
         contrasenia= (EditText)findViewById(R.id.contrasenia);
-        Log.d("Registro", "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
+        Log.d(LOG_TAG, "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
 
         //LLAMAR AL MÉTODO DE LOGIN
         handler.register(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 // Exito
+                Log.d(LOG_TAG, "Exito al registrarse");
                 Toast.makeText(getApplicationContext(), "Exito", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
@@ -50,6 +53,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onError(Error error) {
                 // Error
+                Log.d(LOG_TAG, "Error "+error.getCode()+" al registrarse: "+error.getDescription());
                 Toast.makeText(getApplicationContext(), "Error "+error.getCode()+" al registrarse: "+error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
