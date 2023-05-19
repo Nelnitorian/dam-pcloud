@@ -12,7 +12,7 @@ public interface IPcloudRestHandler {
      @param password contraseña del usuario
      @param callback objeto de callback que gestionará el resultado
     */
-    public void register(String mail, String password, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void register(String mail, String password, HandlerCallBack callback);
 
 
     /** Inicia sesión usando el flujo de password digest
@@ -23,7 +23,7 @@ public interface IPcloudRestHandler {
      @param password contraseña del usuario
      @param callback objeto de callback que gestionará el resultado
     */
-    public void login(String username, String password, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void login(String username, String password, HandlerCallBack callback);
 
 
     /** Manda las instrucciones para restablecer la contraseña al correo.
@@ -33,7 +33,7 @@ public interface IPcloudRestHandler {
      @param mail correo al que se mandará la información
      @param callback objeto de callback que gestionará el resultado
     */
-    public void recover_password(String mail, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void recover_password(String mail, HandlerCallBack callback);
 
 
     /** Crea un nuevo directorio.
@@ -46,7 +46,7 @@ public interface IPcloudRestHandler {
      @param name nombre del directorio a crear
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_create(String folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_create(String folder_id, String name, HandlerCallBack callback);
 
 
     /** Renombra un directorio.
@@ -60,7 +60,7 @@ public interface IPcloudRestHandler {
      @param new_name nuevo nombre del directorio
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_rename(String folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_rename(String folder_id, String new_name, HandlerCallBack callback);
 
 
     /** Mueve un directorio a otro directorio.
@@ -74,7 +74,7 @@ public interface IPcloudRestHandler {
      @param new_parent_id id del nuevo directorio padre
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_move(String folder_id, String new_parent_id, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_move(String folder_id, String new_parent_id, HandlerCallBack callback);
 
 
     /** Copia un directorio a otro.
@@ -88,7 +88,7 @@ public interface IPcloudRestHandler {
      @param new_parent_id id del directorio al que será copiado
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_copy(String folder_id, String new_parent_id, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_copy(String folder_id, String new_parent_id, HandlerCallBack callback);
 
 
     /** Borra el directorio indicado.
@@ -101,7 +101,7 @@ public interface IPcloudRestHandler {
      @param folder_id id del directorio
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_delete(String folder_id, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_delete(String folder_id, HandlerCallBack callback);
 
 
     /** Lista un directorio y su contenido.
@@ -114,9 +114,8 @@ public interface IPcloudRestHandler {
      @param folder_id id del directorio
      @param callback objeto de callback que gestionará el resultado
     */
-    public void folder_list(String folder_id, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void folder_list(String folder_id, HandlerCallBack callback);
 
-//
 //    // TODO terminar una vez esté completo
 //    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback);
 
@@ -133,7 +132,7 @@ public interface IPcloudRestHandler {
      @param local_file_path path hacia el fichero
      @param callback objeto de callback que gestionará el resultado
      */
-    public void file_upload(String folder_id, String file_name, String local_file_path, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void file_upload(String folder_id, String file_name, String local_file_path, HandlerCallBack callback);
 
 
     /** Copia un fichero a un directorio especificado.
@@ -148,7 +147,7 @@ public interface IPcloudRestHandler {
      @param name nombre del fichero copiado
      @param callback objeto de callback que gestionará el resultado
     */
-    public void file_copy(String file_id, String to_folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void file_copy(String file_id, String to_folder_id, String name, HandlerCallBack callback);
 
 
     /** Borra un fichero.
@@ -161,7 +160,7 @@ public interface IPcloudRestHandler {
      @param file_id id del fichero
      @param callback objeto de callback que gestionará el resultado
     */
-    public void file_delete(String file_id, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void file_delete(String file_id, HandlerCallBack callback);
 
 
     /** Renombra un fichero.
@@ -175,7 +174,7 @@ public interface IPcloudRestHandler {
      @param new_name nuevo nombre del archivo copiado
      @param callback objeto de callback que gestionará el resultado
     */
-    public void file_rename(String file_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void file_rename(String file_id, String new_name, HandlerCallBack callback);
 
 
     /** Mueve un fichero a otro directorio.
@@ -190,7 +189,7 @@ public interface IPcloudRestHandler {
      @param new_name nuevo nombre del archivo
      @param callback objeto de callback que gestionará el resultado
      */
-    public void file_move(String file_id, String to_folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback);
+    public void file_move(String file_id, String to_folder_id, String new_name, HandlerCallBack callback);
 
 
     /** Consulta la inforamción de un fichero.

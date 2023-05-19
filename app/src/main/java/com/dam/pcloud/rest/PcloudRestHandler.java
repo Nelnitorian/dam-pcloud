@@ -24,7 +24,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String METHOD_REGISTER = "register";
     private static final String METHOD_DIGEST = "getdigest";
     private static final String METHOD_LOGIN_DIGEST = "userinfo";
-//    private static final String METHOD_USER_INFO = "userinfo";
+    //    private static final String METHOD_USER_INFO = "userinfo";
     private static final String METHOD_CREATE_FOLDER = "createfolder";
     private static final String METHOD_LOST_PASSWORD = "lostpassword";
     private static final String METHOD_FOLDER_RENAME = "renamefolder";
@@ -704,4 +704,3 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         });
     }
 }
-

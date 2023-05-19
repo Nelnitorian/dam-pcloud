@@ -39,4 +39,9 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@drawable/lupa</item>
+    </style>
+
+
 </resources>
