@@ -1,13 +1,19 @@
 package com.dam.pcloud;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -21,6 +27,9 @@ public class Adaptador extends BaseAdapter implements Filterable {
     private ArrayList<ListItem> listItems;
     private ArrayList<ListItem> filteredListItems;
     private Context context;
+    private ImageView imageLeft;
+    private TextView textItem;
+    private ImageView points;
 
     public Adaptador(Context context, ArrayList<ListItem> listItems) {
         this.context = context;
@@ -63,9 +72,9 @@ public class Adaptador extends BaseAdapter implements Filterable {
 
         // CREAMOS E INICIALIZAMOS LOS ELEMENTOS DEL ITEM DE LA LISTA
         convertView = LayoutInflater.from(context).inflate(R.layout.formato_item, null);
-        ImageView imageLeft = (ImageView) convertView.findViewById(R.id.imageLeft);
-        TextView textItem = (TextView) convertView.findViewById(R.id.textItem);
-        ImageView points = (ImageView) convertView.findViewById(R.id.points);
+        imageLeft = (ImageView) convertView.findViewById(R.id.imageLeft);
+        textItem = (TextView) convertView.findViewById(R.id.textItem);
+        points = (ImageView) convertView.findViewById(R.id.points);
 
         // LLENAMOS LOS ELEMENTOS CON LOS VALORES DE CADA ITEM
         imageLeft.setImageResource(item.getImgLeft());
@@ -112,7 +121,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
 
                 // Realizar la acción correspondiente según el elemento seleccionado
                 if (selectedItem.equals("Renombrar")) {
-                    //metodoOpcion1();
+                    mostrarDialogo();
                 } else if (selectedItem.equals("Copiar")) {
                     //metodoOpcion2();
                 } else if (selectedItem.equals("Eliminar")) {
@@ -124,6 +133,34 @@ public class Adaptador extends BaseAdapter implements Filterable {
         });
 
         popupMenu.show();
+    }
+    //Método para mostrar un cuadro de diálogo
+    private void mostrarDialogo() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Renombrar");
+
+                // Inflar el diseño personalizado para el contenido del diálogo
+                View dialogView = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null);
+                builder.setView(dialogView);
+
+                // Obtener la referencia a la caja de texto
+                EditText editText = dialogView.findViewById(R.id.editText);
+                builder.setPositiveButton("Renombrar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String nuevoNombre = editText.getText().toString();
+                        //LLAMAR AL MÉTODO RENAME Y POSTERIORMENTE ACTUALIZAR NOMBRE LOCAL
+                        //OJO HAY QUE DISTINGUIR EL TIPO DE ICloudItem PARA LLAMAR AL MÉTODO CORRESPONDIENTE
+                        Log.d("Adaptador/Inicio", "Nuevo nombre: "+nuevoNombre);
+                    }
+                });
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //nada
+                    }
+                });
+                builder.show();
     }
 
     //Método getFilter para poder filtrar las búsquedas en la pantalla Inicio
