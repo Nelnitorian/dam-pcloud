@@ -114,19 +114,19 @@ public class MainActivity extends Activity {
                 });
 
                 // Cuarta petición: descargar fichero
-                handler.file_upload("0","prueba_remota", file.getAbsolutePath(), new HandlerCallBack(){
-                    @Override
-                    public void onSuccess(Object obj) {
-                        ArrayList<PCloudItem> children = (ArrayList<PCloudItem>) obj;
-                        PCloudFile file = (PCloudFile) children.get(0);
-                        Log.d("FILE_UPLOAD", "OK");
-                        Log.d("FILE_UPLOAD", "NOMBRE DE FICHERO: "+file.getName());
-                    }
-                    @Override
-                    public void onError(Error error){
-                        Log.d("FILE_UPLOAD", "ERROR. Code: "+error.getCode()+" Description: "+error.getDescription());
-                    }
-                });
+//                handler.file_upload("0","prueba_remota", file.getAbsolutePath(), new HandlerCallBack(){
+//                    @Override
+//                    public void onSuccess(Object obj) {
+//                        ArrayList<PCloudItem> children = (ArrayList<PCloudItem>) obj;
+//                        PCloudFile file = (PCloudFile) children.get(0);
+//                        Log.d("FILE_UPLOAD", "OK");
+//                        Log.d("FILE_UPLOAD", "NOMBRE DE FICHERO: "+file.getName());
+//                    }
+//                    @Override
+//                    public void onError(Error error){
+//                        Log.d("FILE_UPLOAD", "ERROR. Code: "+error.getCode()+" Description: "+error.getDescription());
+//                    }
+//                });
             }
             @Override
             public void onError(Error error){
