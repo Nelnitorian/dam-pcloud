@@ -1,13 +1,13 @@
 package com.dam.pcloud.rest;
 
-public class File extends Item{
+public class PCloudFile extends PCloudItem {
     private String size;
 
-    public File(){
+    public PCloudFile(){
 
     }
 
-    public File(String id, String parent_id, String name, String size, ItemType type){
+    public PCloudFile(String id, String parent_id, String name, String size, ItemType type){
         this.id = id;
         this.parent_id = parent_id;
         this.name = name;

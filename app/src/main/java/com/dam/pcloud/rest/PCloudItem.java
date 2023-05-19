@@ -1,6 +1,6 @@
 package com.dam.pcloud.rest;
 
-public abstract class Item {
+public abstract class PCloudItem {
     public enum ItemType{
         FOLDER(1),
         FILE(2),
