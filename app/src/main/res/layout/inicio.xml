@@ -132,13 +132,4 @@
         android:spinnerMode="dropdown"
         android:visibility="invisible"/>
 
-    <!-- Desplegable que aparece al pulsar los 3 puntitos de algún archivo -->
-    <Spinner
-        android:id="@+id/despl_points"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/points"
-        android:visibility="gone"/>
-
-
 </RelativeLayout>
