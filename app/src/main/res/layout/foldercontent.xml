@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- inicio -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clipToOutline="true">
+
+    <!-- Inicio -->
+    <TextView
+        android:id="@+id/inicio"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="20dp"
+        android:gravity="top"
+        android:text="@string/inicio"
+        android:textAppearance="@style/titulo" />
+
+    <!-- Buscador -->
+    <View
+        android:id="@+id/buscador"
+        android:layout_width="331dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="65dp"
+        android:background="@drawable/buscador"
+        android:elevation="-2dp"
+        />
+
+    <!-- Buscar -->
+    <TextView
+        android:id="@+id/buscar"
+        android:layout_width="69dp"
+        android:layout_height="33dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="46dp"
+        android:layout_marginTop="63dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/buscar"
+        android:textAppearance="@style/email" />
+
+    <!-- Lupa -->
+    <View
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/lupa" />
+
+    <!-- Archivos -->
+    <TextView
+        android:id="@+id/archivos"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="109dp"
+        android:fontFamily="@font/inter_extrabold"
+        android:gravity="top"
+        android:text="@string/archivos"
+        android:textAppearance="@style/texto_normal" />
+
+    <!-- Linea top -->
+    <View
+        android:layout_width="393dp"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="140dp"
+        android:background="#d8d8d8"></View>
+
+    <!-- lista de archivos -->
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="145dp"
+        android:elevation="-2dp"/>
+
+    <!-- Circulo-->
+    <View
+        android:id="@+id/ellipse_2"
+        android:layout_width="75dp"
+        android:layout_height="76dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="298dp"
+        android:layout_marginTop="710dp"
+        android:background="@drawable/circulo"
+        android:elevation="-2dp" />
+
+    <!-- + -->
+    <TextView
+        android:id="@+id/some_id"
+        android:layout_width="75dp"
+        android:layout_height="67dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="298dp"
+        android:layout_marginTop="708dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="+"
+        android:textAppearance="@style/plus" />
+
+</RelativeLayout>

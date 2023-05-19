@@ -34,4 +34,9 @@
         <item name="android:textColor">#807575</item>
     </style>
 
+    <style name="plus">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 </resources>

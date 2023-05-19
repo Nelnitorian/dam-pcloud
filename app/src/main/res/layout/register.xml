@@ -45,18 +45,21 @@
         android:background="@drawable/rectangle_2"
         />
     <!-- Email -->
-    <TextView
+    <EditText
         android:id="@+id/email"
-        android:layout_width="41dp"
+        android:layout_width="224dp"
         android:layout_height="19dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="89dp"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="89dp"
         android:layout_marginTop="237dp"
-        android:text="@string/email"
-        android:textAppearance="@style/email"
+        android:background="@null"
         android:gravity="top"
-        />
+        android:hint="@string/email"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="@style/email" />
 
     <!-- Rectangle 3 -->
     <View
@@ -70,18 +73,22 @@
         android:background="@drawable/rectangle_3"
         />
     <!-- Contraseña -->
-    <TextView
+    <EditText
         android:id="@+id/contrasenia"
-        android:layout_width="88dp"
-        android:layout_height="19dp"
+        android:layout_width="222dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="89dp"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="89dp"
         android:layout_marginTop="307dp"
-        android:text="@string/contrasenia"
-        android:textAppearance="@style/email"
+        android:background="@null"
+        android:inputType="textPassword"
         android:gravity="top"
-        />
+        android:hint="@string/contrasenia"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="@style/email" />
 
     <!-- Rectangle azul -->
     <View
@@ -92,8 +99,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="73dp"
         android:layout_marginTop="418dp"
+        android:onClick="clicEnRegistrarse"
         android:background="@drawable/rectangle_azul" />
-    <!-- Registrarse-->
+
+    <!-- Ya tienes cuenta? Inicia sesión-->
     <TextView
         android:id="@+id/inicia"
         android:layout_width="wrap_content"
@@ -104,9 +113,10 @@
         android:layout_marginTop="474dp"
         android:gravity="top"
         android:text="@string/inicia"
+        android:onClick="clicEnIniciarSesion"
         android:textAppearance="@style/texto_normal" />
 
-    <!-- Ya tienes cuenta? Inicia sesión-->
+    <!-- Registrarse-->
     <TextView
         android:id="@+id/iniciar_ses"
         android:layout_width="93dp"
@@ -117,6 +127,7 @@
         android:layout_marginTop="427dp"
         android:gravity="top"
         android:text="@string/registrarse"
+        android:onClick="clicEnRegistrarse"
         android:textAppearance="@style/iniciar_sesion" />
 
 </RelativeLayout>
