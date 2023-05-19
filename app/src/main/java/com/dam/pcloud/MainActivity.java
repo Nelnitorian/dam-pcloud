@@ -102,8 +102,7 @@ public class MainActivity extends Activity {
                 handler.file_upload("0","prueba_remota", file.getAbsolutePath(), new HandlerCallBack(){
                     @Override
                     public void onSuccess(Object obj) {
-                        ArrayList<PCloudItem> children = (ArrayList<PCloudItem>) obj;
-                        PCloudFile file = (PCloudFile) children.get(0);
+                        PCloudFile file = (PCloudFile) obj;
                         Log.d("FILE_UPLOAD", "OK");
                         Log.d("FILE_UPLOAD", "NOMBRE DE FICHERO: "+file.getName());
                     }

@@ -53,7 +53,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Folder con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
      * directorio creado.
      *
      @param folder_id id del directorio
@@ -67,7 +67,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Folder con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
      * directorio ya movido.
      *
      @param folder_id id del directorio
@@ -81,7 +81,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Folder con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
      * directorio ya copiado.
      *
      @param folder_id id del directorio
@@ -95,7 +95,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Folder con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
      * directorio borrado.
      *
      @param folder_id id del directorio
@@ -108,7 +108,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Folder con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
      * directorio con todos sus hijos.
      *
      @param folder_id id del directorio
@@ -121,7 +121,18 @@ public interface IPcloudRestHandler {
 //    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback);
 
 
-    // TODO terminar una vez esté completo
+    /** Sube un fichero.
+     *
+     * Requiere auth.
+     *
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
+     * fichero subido.
+     *
+     @param folder_id id del directorio en el que se creará el fichero
+     @param file_name nombre del archivo a crear
+     @param local_file_path path hacia el fichero
+     @param callback objeto de callback que gestionará el resultado
+     */
     public void file_upload(String folder_id, String file_name, String local_file_path, com.dam.pcloud.rest.HandlerCallBack callback);
 
 
@@ -129,7 +140,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un File con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
      * fichero copiado.
      *
      @param file_id id del fichero
@@ -144,7 +155,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un File con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
      * fichero borrado.
      *
      @param file_id id del fichero
@@ -157,7 +168,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un File con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
      * fichero renombrado.
      *
      @param file_id id del fichero
@@ -171,7 +182,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un File con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
      * fichero movido.
      *
      @param file_id id del fichero
@@ -186,7 +197,7 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     * Al llamar a HandlerCallBack.onSuccess() se le pasará un File con la información del
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFile con la información del
      * fichero consultado.
      *
      @param file_id id del fichero

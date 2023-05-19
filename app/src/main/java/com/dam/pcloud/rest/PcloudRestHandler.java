@@ -580,7 +580,8 @@ public class PcloudRestHandler implements IPcloudRestHandler {
                 }
                 try {
                     ArrayList<PCloudItem> children = createChildrenFromJson(json.getJSONArray(RESPONSE_DATA));
-                    callback.onSuccess(children);
+                    PCloudFile file = (PCloudFile)children.get(0);
+                    callback.onSuccess(file);
                 } catch (JSONException e) {
                     callback.onError(extractError(json));
                 }
