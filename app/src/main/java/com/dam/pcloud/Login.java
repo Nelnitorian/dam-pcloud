@@ -2,11 +2,12 @@ package com.dam.pcloud;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.Volley;
 import com.dam.pcloud.rest.Error;
@@ -40,7 +41,10 @@ public class Login extends AppCompatActivity {
         Log.d("Inicio_sesion", "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
 
         //LLAMAR AL MÉTODO DE LOGIN
-        handler.login(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
+        Intent intent = new Intent(getApplicationContext(), Inicio.class);
+        startActivity(intent);
+
+ /*       handler.login(email.getText().toString(), contrasenia.getText().toString(), new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 // Exito
@@ -53,7 +57,7 @@ public class Login extends AppCompatActivity {
                 // Error
                 Toast.makeText(getApplicationContext(), "Error "+error.getCode()+" al iniciar sesión: "+error.getDescription(), Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
     public void clicEnRegistrarse(View view) {
         Intent intent = new Intent(this, Register.class);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="points">
+        <item>Renombrar</item>
+        <item>Copiar</item>
+        <item>Eliminar</item>
+    </string-array>
+    <string-array name="plus">
+        <item>Crear carpeta</item>
+        <item>Subir fotos</item>
+        <item>Subir archivos</item>
+    </string-array>
+    <string-array name="lista_prueba">
+        <item>Archivo 1</item>
+        <item>Archivo 2</item>
+        <item>Belén</item>
+        <item>Juanjo</item>
+        <item>Arc</item>
+    </string-array>
+</resources>
