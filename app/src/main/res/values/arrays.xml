@@ -9,11 +9,4 @@
         <item>Crear carpeta</item>
         <item>Subir archivos</item>
     </string-array>
-    <string-array name="lista_prueba">
-        <item>Archivo 1</item>
-        <item>Archivo 2</item>
-        <item>Belén</item>
-        <item>Juanjo</item>
-        <item>Arc</item>
-    </string-array>
 </resources>
