@@ -1,6 +1,7 @@
 package com.dam.pcloud;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,11 +18,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 
+
+import com.dam.pcloud.rest.Error;
+import com.dam.pcloud.rest.HandlerCallBack;
+import com.dam.pcloud.rest.IPcloudRestHandler;
+import com.dam.pcloud.rest.PCloudFolder;
+import com.dam.pcloud.rest.PCloudItem;
 
 import java.util.ArrayList;
 
@@ -29,46 +37,68 @@ public class Inicio extends AppCompatActivity {
 
     private ListView lista;
     private SearchView buscar;
-    private int fotoItem;
     private Adaptador adaptador;
     private ArrayList<ListItem> items;
+    private Context context;
+    IPcloudRestHandler handler;
+    private static final String LOG_TAG = "Inicio";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inicio);
-        lista = (ListView) findViewById(R.id.lista_archivos);
-        buscar = (SearchView) findViewById(R.id.buscar);
 
-        //LLAMAR AL MÉTODO QUE LISTE TODOS LOS ARCHIVOS Y CARPETAS
+        this.context = this;
 
-        // ArrayList para almacenar los elementos de la lista
-        items = new ArrayList<>();
-        //Dependiendo del formato del archivo ponemos una imagen personalizada
-        fotoItem = R.drawable.file; //He puesto esta por defecto para probar
-        //lista incluye unos archivos de ejemplo que he creado para probar el código
-        for (int i = 0; i < lista.getCount(); i++) {
-            items.add(new ListItem(fotoItem, lista.getItemAtPosition(i).toString(), R.drawable.points));
-        }
+        this.handler = MypCloud.getInstance().getHandler();
 
-        //Aplicamos un formato personalizado a cada elemento de la lista
-        adaptador = new Adaptador(this, items);
-        lista.setAdapter(adaptador);
-
-        //Filtro del buscador
-        buscar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // Se hace la petición al servidor de la carpeta "/"
+        handler.folder_list("0", new HandlerCallBack() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Inicio.this.adaptador.getFilter().filter(query);
-                return false;
+            public void onSuccess(Object obj) {
+                PCloudFolder folder = (PCloudFolder) obj;
+
+                Log.d(LOG_TAG, "Exito en la peticion de la carpeta con id 0");
+                Log.d(LOG_TAG, "Se han traído "+folder.getChildren().size()+" hijos del directorio.");
+
+                // Poblamos los ListItem para la vista
+                items = new ArrayList<>();
+                for (PCloudItem item : folder.getChildren()) {
+                    items.add(parsePCloudItemToListItem(item));
+                }
+
+                lista = (ListView) findViewById(R.id.lista_archivos);
+                buscar = (SearchView) findViewById(R.id.buscar);
+
+                //Aplicamos un formato personalizado a cada elemento de la lista
+                adaptador = new Adaptador(context, items);
+                lista.setAdapter(adaptador);
+
+                //Filtro del buscador
+                buscar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Inicio.this.adaptador.getFilter().filter(query);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        Inicio.this.adaptador.getFilter().filter(newText);
+                        return false;
+                    }
+                });
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                Inicio.this.adaptador.getFilter().filter(newText);
-                return false;
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al iniciar sesión: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al solicitar ficheros: " + error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 
 
     //Al hacer click en el botón + se llama al método que despliega el menú de opciones
@@ -144,5 +174,22 @@ public class Inicio extends AppCompatActivity {
         builder.show();
     }
 
-
+    private ListItem parsePCloudItemToListItem(PCloudItem pcloudItem){
+        // TODO poner los iconos bien
+        ListItem listItem;
+        if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
+            // Es un directorio
+            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+        } else if (pcloudItem.getType() == PCloudItem.ItemType.IMAGE){
+            // Es una imagen
+            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+        } else if (pcloudItem.getType() == PCloudItem.ItemType.AUDIO){
+            // Es una imagen
+            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+        } else {
+            // Es otro
+            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+        }
+        return listItem;
+    }
 }

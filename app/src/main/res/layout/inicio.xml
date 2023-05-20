@@ -85,8 +85,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="145dp"
         android:elevation="-2dp"
-        android:entries="@array/lista_prueba"
         />
+<!--    android:entries="@array/lista_prueba"-->
 
     <!-- Circulo-->
     <View

@@ -1,5 +1,7 @@
 package com.dam.pcloud;
 
+import com.dam.pcloud.rest.PCloudItem;
+
 import java.io.Serializable;
 
 public class ListItem implements Serializable {
@@ -8,10 +10,13 @@ public class ListItem implements Serializable {
     private String textItem;
     private int imgPoints;
 
-    public ListItem(int imgLeft, String textItem, int imgPoints) {
+    private PCloudItem pcloudItem;
+
+    public  ListItem(int imgLeft, PCloudItem pcloudItem, int imgPoints) {
         this.imgLeft = imgLeft;
-        this.textItem = textItem;
+        this.textItem = pcloudItem.getName();
         this.imgPoints = imgPoints;
+        this.pcloudItem = pcloudItem;
     }
 
     public int getImgLeft() {
