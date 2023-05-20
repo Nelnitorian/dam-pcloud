@@ -23,8 +23,6 @@ public class Login extends AppCompatActivity {
     private EditText contrasenia;
     private IPcloudRestHandler handler;
     private static final String LOG_TAG = "Inicio_sesion";
-    private IBinder keyboardBinder = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
