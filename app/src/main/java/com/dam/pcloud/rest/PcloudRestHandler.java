@@ -182,6 +182,8 @@ public class PcloudRestHandler implements IPcloudRestHandler {
             type = PCloudItem.ItemType.AUDIO;
         } else if(contenttype.contains("image")){
             type = PCloudItem.ItemType.IMAGE;
+        } else if(contenttype.contains("video")){
+            type = PCloudItem.ItemType.VIDEO;
         } else { //File
             type = PCloudItem.ItemType.FILE;
         }

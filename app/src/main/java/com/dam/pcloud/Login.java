@@ -30,7 +30,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.handler = MypCloud.getInstance().getHandler();
-        if(!handler.alreadyLogged()){
+        if(handler.alreadyLogged()){
             Intent intent = new Intent(getApplicationContext(), FolderContents.class);
             intent.putExtra("folder_id", "0");
             startActivity(intent);

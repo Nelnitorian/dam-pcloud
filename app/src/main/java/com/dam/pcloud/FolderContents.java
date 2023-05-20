@@ -187,8 +187,8 @@ public class FolderContents extends AppCompatActivity {
     }
 
     private ListItem parsePCloudItemToListItem(PCloudItem pcloudItem){
-        // TODO poner los iconos bien
         ListItem listItem;
+        Log.d(LOG_TAG, "pcloudItem type = "+pcloudItem.getType());
         if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
             // Es un directorio
             listItem = new ListItem(R.drawable.folder, pcloudItem, R.drawable.points);
@@ -198,6 +198,9 @@ public class FolderContents extends AppCompatActivity {
         } else if (pcloudItem.getType() == PCloudItem.ItemType.AUDIO){
             // Es un audio
             listItem = new ListItem(R.drawable.music, pcloudItem, R.drawable.points);
+        } else if (pcloudItem.getType() == PCloudItem.ItemType.VIDEO){
+            // Es un audio
+            listItem = new ListItem(R.drawable.video, pcloudItem, R.drawable.points);
         } else {
             // Es otro
             listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
