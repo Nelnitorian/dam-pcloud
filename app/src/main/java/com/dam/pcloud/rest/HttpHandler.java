@@ -37,15 +37,9 @@ public class HttpHandler {
         queue.add(request);
     }
 
-    public void postRequest (String uri, String body, HttpCallBack callback) {
-//        TODO esta copiado de get. No funciona.
+    public void putRequest (String uri, byte[] body, HttpCallBack callback) {
         Log.d("HTTPHANDLER", "Uri: "+uri);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, uri, new JSONObject(){
-            @Override
-            public String toString(){
-                return body;
-            }
-        },
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, uri, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -56,7 +50,17 @@ public class HttpHandler {
             public void onErrorResponse(VolleyError error) {
 //                        callback.onError();
             }
-        });
+        }){
+            @Override
+            public String getBodyContentType() {
+                return "application/octet-stream";
+            }
+
+            @Override
+            public byte[] getBody() {
+                return body;
+            }
+        };
         // add the request object to the queue to be executed
         queue.add(request);
     }

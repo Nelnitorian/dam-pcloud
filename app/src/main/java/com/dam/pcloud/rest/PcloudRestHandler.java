@@ -8,15 +8,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
 
 public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String API_ENDPOINT = "https://eapi.pcloud.com/";
@@ -75,10 +79,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String RESPONSE_DIGEST = "digest";
     private static final String RESPONSE_AUTH = "auth";
     private static final String RESPONSE_FD = "fd";
-
-    private static final String CONFIG_AUTH_EXPIRES = "expires";
     private static final String CONFIG_AUTH_TOKEN = "token";
-    private static final String CONFIG_AUTH_TOKEN_ID = "token_id";
 
     private static final String CONFIG_AUTH_FILE_PATH = "/data/user/0/com.dam.pcloud/files/auth.conf";
 
@@ -147,15 +148,44 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     }
 
     private String readFile(String path) {
+        Log.d("PcloudRestHandler", "Leyendo el fichero "+path);
+        String [] split = path.split("/");
+        String parent_path = String.join("/", Arrays.copyOf(split, split.length - 1));
+        String file_name = split[split.length-1];
+        File file = new File(parent_path, file_name);
         StringBuilder sb = new StringBuilder();
-        try (Scanner in = new Scanner(new FileReader(path))) {
-            while (in.hasNext()) {
-                sb.append(in.next());
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
             }
-        } catch (FileNotFoundException e) {
-            Log.e("PcloudRestHandler", "No se ha encontrado el archivo: "+path);
+
+            String content = sb.toString();
+            // Aquí tienes el contenido del archivo
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return sb.toString();
+    }
+
+    private byte[] readFile(InputStream is) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try {
+            byte[] data = new byte[4096]; // Adjust buffer size as needed
+            int bytesRead;
+            while ((bytesRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, bytesRead);
+            }
+            buffer.flush();
+        } catch (IOException e){
+            Log.d("PcloudRestHandler", "Error en la lectura del InputStream");
+        }
+        return buffer.toByteArray();
     }
 
     private PCloudFolder createFolderFromJson(JSONObject json) throws JSONException {
@@ -211,8 +241,8 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         return lst;
     }
 
-    private com.dam.pcloud.rest.Error extractError(JSONObject json){
-        com.dam.pcloud.rest.ErrorCode error;
+    private Error extractError(JSONObject json){
+        ErrorCode error;
         int result = -1;
         try{
             result = json.getInt(RESPONSE_RESULT);
@@ -220,7 +250,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
             e.printStackTrace();
         }
         try{
-            error = new com.dam.pcloud.rest.ErrorCode(result, json.getString(RESPONSE_ERROR));
+            error = new ErrorCode(result, json.getString(RESPONSE_ERROR));
         } catch (JSONException e){
             error = new ErrorCode(result, "Unknown");
         }
@@ -567,9 +597,9 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 //        });
 //    }
 
-    public void file_upload(String folder_id, String file_name, String local_file_path, com.dam.pcloud.rest.HandlerCallBack callback) {
+    public void file_upload(String folder_id, String file_name, InputStream local_file_input_stream, com.dam.pcloud.rest.HandlerCallBack callback) {
 
-        String data = readFile(local_file_path);
+        byte[] data = readFile(local_file_input_stream);
 
         String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
                 {PARAM_FOLDER_ID, folder_id},
@@ -579,7 +609,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
         String final_uri = API_ENDPOINT + METHOD_FILE_UPLOAD + parameters;
 
-        http_handler.postRequest(final_uri, data, new com.dam.pcloud.rest.HttpCallBack() {
+        http_handler.putRequest(final_uri, data, new com.dam.pcloud.rest.HttpCallBack() {
 
             @Override
             public void onSuccess(JSONObject json) {
@@ -735,6 +765,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
             FileWriter file = new FileWriter(CONFIG_AUTH_FILE_PATH);
             file.write(json.toString());
             file.close();
+            Log.d("PcloudRestHandler", "Escribiendo el archivo: "+CONFIG_AUTH_FILE_PATH);
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }

@@ -1,10 +1,16 @@
 package com.dam.pcloud;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,9 +26,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 import com.dam.pcloud.rest.Error;
@@ -31,6 +41,11 @@ import com.dam.pcloud.rest.IPcloudRestHandler;
 import com.dam.pcloud.rest.PCloudFolder;
 import com.dam.pcloud.rest.PCloudItem;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Inicio extends AppCompatActivity {
@@ -43,6 +58,7 @@ public class Inicio extends AppCompatActivity {
     private IPcloudRestHandler handler;
     private PCloudFolder currentFolder;
     private static final String LOG_TAG = "Inicio";
+    private static final int PICKFILE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +124,9 @@ public class Inicio extends AppCompatActivity {
                 if (selectedItem.equals("Crear carpeta")) {
                     Log.d(LOG_TAG, "Se ha seleccionado 'Crear carpeta'.");
                     mostrarDialogo();
-                } else if (selectedItem.equals("Subir fotos")) {
-                    Log.d(LOG_TAG, "Se ha seleccionado 'Subir fotos'.");
-                    //LLAMAR AL MÉTODO DE UPLOAD CORRESPONDIENTE
                 } else if (selectedItem.equals("Subir archivos")) {
                     Log.d(LOG_TAG, "Se ha seleccionado 'Subir archivos'.");
-                    //LLAMAR AL MÉTODO DE UPLOAD CORRESPONDIENTE
+                    openFileExplorer();
                 }
                 return true;
             }
@@ -193,6 +206,7 @@ public class Inicio extends AppCompatActivity {
         lista = (ListView) findViewById(R.id.lista_archivos);
         buscar = (SearchView) findViewById(R.id.buscar);
 
+        Log.d(LOG_TAG, "Se mostaran "+items.size()+" elementos");
         //Aplicamos un formato personalizado a cada elemento de la lista
         adaptador = new Adaptador(context, items);
         lista.setAdapter(adaptador);
@@ -249,5 +263,123 @@ public class Inicio extends AppCompatActivity {
             // Es fichero
             handler.file_rename(id, pcloudItem.getParent_id(), newName, callback);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICKFILE_REQUEST_CODE && resultCode == RESULT_OK){
+            if (ContextCompat.checkSelfPermission(this , Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // Tenemos permiso
+                Log.d(LOG_TAG, "Ya se tenía permiso");
+                uploadFile(data);
+            } else {
+                // Pedimos permiso
+                Log.d(LOG_TAG, "Se va a solicitar permiso");
+                ActivityResultLauncher<String> requestPermissionLauncher =
+                        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                            if (isGranted) {
+                                // Hay permiso
+                                Log.d(LOG_TAG, "Se ha concedido permiso");
+                                uploadFile(data);
+                            } else {
+                                // No hay permiso
+                                Log.d(LOG_TAG, "No hay permiso");
+                                Toast.makeText(getApplicationContext(), "Error: no se ha concedido permisos", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
+    private void openFileExplorer() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        // TODO remove waring deprecation
+        startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+    }
+
+    private String getFilePathFromUri(Uri uri) {
+        String path = null;
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            Cursor cursor = null;
+            try {
+                cursor = getContentResolver().query(uri, projection, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    path = cursor.getString(columnIndex);
+                }
+            } catch (Exception e) {
+                // Handle the exception as needed
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            path = uri.getPath();
+        }
+        return path;
+    }
+
+    private InputStream getInputStreamFromUri(Uri uri){
+        String path = getFilePathFromUri(uri);
+        InputStream is;
+        try {
+            if (path == null){
+                is = getContentResolver().openInputStream(uri);
+            } else {
+                is = new FileInputStream(path);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return is;
+    }
+
+    private String getFilenameFromUri(Uri uri) {
+        String filename = null;
+        if (uri != null) {
+            String path = uri.getPath();
+            int index = path.lastIndexOf("/");
+            if (index >= 0 && index < path.length() - 1) {
+                filename = path.substring(index + 1);
+            }
+        }
+        return filename;
+    }
+
+    private void uploadFile(Intent data) {
+        Uri uri = data.getData();
+        InputStream is = getInputStreamFromUri(uri);
+        String fileName = getFilenameFromUri(uri);
+
+        Log.d(LOG_TAG, "Subir archivo. Uri: "+uri.toString());
+        Log.d(LOG_TAG, "Subir archivo. Nombre del fichero: "+fileName);
+
+        handler.file_upload(currentFolder.getId(), fileName, is, new HandlerCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                PCloudItem item = (PCloudItem) obj;
+
+                ArrayList<PCloudItem> children = currentFolder.getChildren();
+                children.add(item);
+                currentFolder.setChildren(children);
+
+                items.add(parsePCloudItemToListItem(item));
+
+                Log.d(LOG_TAG, "Subido nuevo fichero: "+item.getName());
+                refreshView();
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al subir fichero: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al subir fichero: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

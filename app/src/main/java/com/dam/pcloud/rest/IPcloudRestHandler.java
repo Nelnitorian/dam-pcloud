@@ -2,6 +2,8 @@ package com.dam.pcloud.rest;
 
 import com.dam.pcloud.rest.HandlerCallBack;
 
+import java.io.InputStream;
+
 public interface IPcloudRestHandler {
 
     /** Registra un usuario
@@ -129,10 +131,10 @@ public interface IPcloudRestHandler {
      *
      @param folder_id id del directorio en el que se creará el fichero
      @param file_name nombre del archivo a crear
-     @param local_file_path path hacia el fichero
+     @param local_file_input_stream input stream del fichero local
      @param callback objeto de callback que gestionará el resultado
      */
-    public void file_upload(String folder_id, String file_name, String local_file_path, HandlerCallBack callback);
+    public void file_upload(String folder_id, String file_name, InputStream local_file_input_stream, HandlerCallBack callback);
 
 
     /** Copia un fichero a un directorio especificado.
