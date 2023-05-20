@@ -3,15 +3,13 @@ package com.dam.pcloud;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -21,19 +19,21 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.PopupMenu;
 
+import com.dam.pcloud.rest.PCloudItem;
+
 import java.util.ArrayList;
 
 public class Adaptador extends BaseAdapter implements Filterable {
     private ArrayList<ListItem> listItems;
     private ArrayList<ListItem> filteredListItems;
-    private Inicio context;
+    private FolderContents context;
     private ImageView imageLeft;
     private TextView textItem;
     private ImageView points;
     private static final String LOG_TAG = "Adaptador/Inicio";
 
     public Adaptador(Context context, ArrayList<ListItem> listItems) {
-        this.context = (Inicio)context;
+        this.context = (FolderContents)context;
         this.listItems = listItems;
     }
 
@@ -89,6 +89,19 @@ public class Adaptador extends BaseAdapter implements Filterable {
                 showDesplegable(v, position);
             }
         });
+
+        ListItem finalItem = item;
+        if (item.getPcloudItem().getType() == PCloudItem.ItemType.FOLDER) {
+            textItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, FolderContents.class);
+                    intent.putExtra("folder_id", finalItem.getPcloudItem().getId());
+
+                    context.startActivity(intent);
+                }
+            });
+        }
 
         return convertView;
     }

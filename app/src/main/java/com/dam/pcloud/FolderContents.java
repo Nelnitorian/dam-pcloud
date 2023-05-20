@@ -1,7 +1,6 @@
 package com.dam.pcloud;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,19 +10,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,7 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
@@ -41,14 +34,12 @@ import com.dam.pcloud.rest.IPcloudRestHandler;
 import com.dam.pcloud.rest.PCloudFolder;
 import com.dam.pcloud.rest.PCloudItem;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class Inicio extends AppCompatActivity {
+public class FolderContents extends AppCompatActivity {
 
     private ListView lista;
     private SearchView buscar;
@@ -57,7 +48,7 @@ public class Inicio extends AppCompatActivity {
     private Context context;
     private IPcloudRestHandler handler;
     private PCloudFolder currentFolder;
-    private static final String LOG_TAG = "Inicio";
+    private static final String LOG_TAG = "FolderContents";
     private static final int PICKFILE_REQUEST_CODE = 1;
 
     @Override
@@ -69,8 +60,10 @@ public class Inicio extends AppCompatActivity {
 
         this.handler = MypCloud.getInstance().getHandler();
 
-        // Se hace la petición al servidor de la carpeta "/"
-        handler.folder_list("0", new HandlerCallBack() {
+        Intent intent = getIntent();
+        String folder_id = intent.getStringExtra("folder_id");
+
+        handler.folder_list(folder_id, new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
                 currentFolder = (PCloudFolder) obj;
@@ -93,6 +86,16 @@ public class Inicio extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al solicitar ficheros: " + error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void changeTitle(){
+        TextView textView = findViewById(R.id.inicio);
+        if (currentFolder.getId().equals("0")){
+            textView.setText(getResources().getString(R.string.inicio));
+        } else {
+            textView.setText(currentFolder.getName());
+        }
+
     }
 
     //Al hacer click en el botón + se llama al método que despliega el menú de opciones
@@ -206,6 +209,8 @@ public class Inicio extends AppCompatActivity {
         lista = (ListView) findViewById(R.id.lista_archivos);
         buscar = (SearchView) findViewById(R.id.buscar);
 
+        changeTitle();
+
         Log.d(LOG_TAG, "Se mostaran "+items.size()+" elementos");
         //Aplicamos un formato personalizado a cada elemento de la lista
         adaptador = new Adaptador(context, items);
@@ -215,13 +220,13 @@ public class Inicio extends AppCompatActivity {
         buscar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Inicio.this.adaptador.getFilter().filter(query);
+                FolderContents.this.adaptador.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Inicio.this.adaptador.getFilter().filter(newText);
+                FolderContents.this.adaptador.getFilter().filter(newText);
                 return false;
             }
         });

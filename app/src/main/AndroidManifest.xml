@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:name=".MypCloud">
         <activity
-            android:name=".Inicio"
+            android:name=".FolderContents"
             android:exported="false" />
         <activity
             android:name=".Login"

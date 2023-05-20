@@ -26,7 +26,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.handler = MypCloud.getInstance().getHandler();
         if(handler.alreadyLogged()){
-            Intent intent = new Intent(getApplicationContext(), Inicio.class);
+            Intent intent = new Intent(getApplicationContext(), FolderContents.class);
+            intent.putExtra("folder_id", "0");
             startActivity(intent);
         } else {
             setContentView(R.layout.login);
@@ -49,7 +50,8 @@ public class Login extends AppCompatActivity {
             public void onSuccess(Object obj) {
                 // Exito
                 Log.d(LOG_TAG, "Login exitoso");
-                Intent intent = new Intent(getApplicationContext(), Inicio.class);
+                Intent intent = new Intent(getApplicationContext(), FolderContents.class);
+                intent.putExtra("folder_id", "0");
                 startActivity(intent);
             }
 

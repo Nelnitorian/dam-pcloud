@@ -34,7 +34,7 @@ public class LostPassword extends AppCompatActivity {
             public void onSuccess(Object obj) {
                 // Exito
                 Log.d("Recuperar contraseña", "Correo enviado!");
-                Intent intent = new Intent(getApplicationContext(), Inicio.class);
+                Intent intent = new Intent(getApplicationContext(), FolderContents.class);
                 startActivity(intent);
             }
 
