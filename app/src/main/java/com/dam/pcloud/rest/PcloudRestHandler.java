@@ -654,8 +654,8 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         });
     }
 
-    public void file_rename(String file_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {
-        this.file_move(file_id, file_id, new_name, callback);
+    public void file_rename(String file_id, String parent_folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {
+        this.file_move(file_id, parent_folder_id, new_name, callback);
     }
 
     public void file_move(String file_id, String to_folder_id, String new_name, com.dam.pcloud.rest.HandlerCallBack callback) {

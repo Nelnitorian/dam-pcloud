@@ -40,5 +40,16 @@ public class ListItem implements Serializable {
         this.imgPoints = imgPoints;
     }
 
+    public PCloudItem getPcloudItem() {
+        return pcloudItem;
+    }
 
+    public void setPcloudItem(PCloudItem pcloudItem) {
+        this.pcloudItem = pcloudItem;
+    }
+
+    public void setPcloudItemAndText(PCloudItem pcloudItem) {
+        this.pcloudItem = pcloudItem;
+        this.textItem = pcloudItem.getName();
+    }
 }

@@ -26,13 +26,14 @@ import java.util.ArrayList;
 public class Adaptador extends BaseAdapter implements Filterable {
     private ArrayList<ListItem> listItems;
     private ArrayList<ListItem> filteredListItems;
-    private Context context;
+    private Inicio context;
     private ImageView imageLeft;
     private TextView textItem;
     private ImageView points;
+    private static final String LOG_TAG = "Adaptador/Inicio";
 
     public Adaptador(Context context, ArrayList<ListItem> listItems) {
-        this.context = context;
+        this.context = (Inicio)context;
         this.listItems = listItems;
     }
 
@@ -117,11 +118,11 @@ public class Adaptador extends BaseAdapter implements Filterable {
                 String fileName = selectedListItem.getTextItem();
 
                 // Mostrar el nombre del archivo en el log
-                Log.d("Adaptador/Inicio", "Se ha seleccionado la opción '" + selectedItem + "' del archivo: " + fileName + ".");
+                Log.d(LOG_TAG, "Se ha seleccionado la opción '" + selectedItem + "' del archivo: " + fileName + ".");
 
                 // Realizar la acción correspondiente según el elemento seleccionado
                 if (selectedItem.equals("Renombrar")) {
-                    mostrarDialogo();
+                    mostrarDialogo(selectedListItem);
                 } else if (selectedItem.equals("Copiar")) {
                     //metodoOpcion2();
                 } else if (selectedItem.equals("Eliminar")) {
@@ -135,7 +136,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
         popupMenu.show();
     }
     //Método para mostrar un cuadro de diálogo
-    private void mostrarDialogo() {
+    private void mostrarDialogo(ListItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Renombrar");
 
@@ -149,9 +150,8 @@ public class Adaptador extends BaseAdapter implements Filterable {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String nuevoNombre = editText.getText().toString();
-                        //LLAMAR AL MÉTODO RENAME Y POSTERIORMENTE ACTUALIZAR NOMBRE LOCAL
-                        //OJO HAY QUE DISTINGUIR EL TIPO DE ICloudItem PARA LLAMAR AL MÉTODO CORRESPONDIENTE
-                        Log.d("Adaptador/Inicio", "Nuevo nombre: "+nuevoNombre);
+                        Log.d(LOG_TAG, "Nuevo nombre: "+nuevoNombre);
+                        context.renameEntryPoint(item, nuevoNombre);
                     }
                 });
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

@@ -171,10 +171,11 @@ public interface IPcloudRestHandler {
      * fichero renombrado.
      *
      @param file_id id del fichero
+     @param parent_folder_id id del directorio en el que se encuentra
      @param new_name nuevo nombre del archivo copiado
      @param callback objeto de callback que gestionará el resultado
     */
-    public void file_rename(String file_id, String new_name, HandlerCallBack callback);
+    public void file_rename(String file_id, String parent_folder_id, String new_name, HandlerCallBack callback);
 
 
     /** Mueve un fichero a otro directorio.

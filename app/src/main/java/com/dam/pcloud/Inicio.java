@@ -40,8 +40,8 @@ public class Inicio extends AppCompatActivity {
     private Adaptador adaptador;
     private ArrayList<ListItem> items;
     private Context context;
-    IPcloudRestHandler handler;
-    PCloudFolder currentFolder;
+    private IPcloudRestHandler handler;
+    private PCloudFolder currentFolder;
     private static final String LOG_TAG = "Inicio";
 
     @Override
@@ -78,9 +78,6 @@ public class Inicio extends AppCompatActivity {
             }
         });
     }
-
-
-
 
     //Al hacer click en el botón + se llama al método que despliega el menú de opciones
     public void clicEnPlusCircle(View view) {
@@ -214,5 +211,43 @@ public class Inicio extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    void renameEntryPoint(ListItem listItem, String newName){
+        PCloudItem pcloudItem = listItem.getPcloudItem();
+
+        String id = pcloudItem.getId();
+        HandlerCallBack callback = new HandlerCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                PCloudItem pCloudItem = (PCloudItem) obj;
+                Log.d(LOG_TAG, "Exito renombrando de "+listItem.getTextItem() +" a "+newName);
+
+                ArrayList<PCloudItem> children = currentFolder.getChildren();
+
+                int indexChildren = children.indexOf(listItem.getPcloudItem());
+                children.set(indexChildren, pCloudItem);
+
+                int indexListItem = items.indexOf(listItem);
+                listItem.setPcloudItemAndText(pCloudItem);
+                items.set(indexListItem, listItem);
+
+                refreshView();
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al renombrar: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al renombrar: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
+            // Es directorio
+            handler.folder_rename(id, newName, callback);
+        } else {
+            // Es fichero
+            handler.file_rename(id, pcloudItem.getParent_id(), newName, callback);
+        }
     }
 }
