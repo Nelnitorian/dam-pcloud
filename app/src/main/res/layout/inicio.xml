@@ -48,7 +48,8 @@
         android:gravity="center_vertical"
         android:textAppearance="@style/email"
         app:iconifiedByDefault="false"
-        app:queryHint="@string/buscar" />
+        app:queryHint="@string/buscar"
+        android:focusable="false"/>
 
 
     <!-- Archivos -->

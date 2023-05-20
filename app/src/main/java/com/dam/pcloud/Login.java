@@ -3,10 +3,10 @@ package com.dam.pcloud;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.IBinder;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,19 +17,20 @@ import com.dam.pcloud.rest.Error;
 import com.dam.pcloud.rest.HandlerCallBack;
 import com.dam.pcloud.rest.IPcloudRestHandler;
 
-public class Login extends AppCompatActivity implements View.OnKeyListener {
+public class Login extends AppCompatActivity {
 
     private EditText email;
     private EditText contrasenia;
     private IPcloudRestHandler handler;
     private static final String LOG_TAG = "Inicio_sesion";
+    private IBinder keyboardBinder = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.handler = MypCloud.getInstance().getHandler();
-        if(handler.alreadyLogged()){
+        if(!handler.alreadyLogged()){
             Intent intent = new Intent(getApplicationContext(), FolderContents.class);
             intent.putExtra("folder_id", "0");
             startActivity(intent);
@@ -42,8 +43,14 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
             contrasenia = findViewById(R.id.contrasenia);
 
             // Asignar el listener de teclado a los campos de texto
-            email.setOnKeyListener((View.OnKeyListener) this);
-            contrasenia.setOnKeyListener((View.OnKeyListener) this);
+            contrasenia.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(v.getWindowToken());
+                    clicEnIniciarSesion();
+                    return true;
+                }
+                return false;
+            });
         }
     }
 
@@ -51,7 +58,7 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
         Intent intent = new Intent(this, LostPassword.class);
         startActivity(intent);
     }
-    public void clicEnIniciarSesion(View view) {
+    private void clicEnIniciarSesion(){
         //Recuperamos los valores introducidos por el usuario
         Log.d(LOG_TAG, "Email: " +email.getText()+ ". Contraseña: " +contrasenia.getText());
 
@@ -75,32 +82,19 @@ public class Login extends AppCompatActivity implements View.OnKeyListener {
             }
         });
     }
+    public void clicEnIniciarSesion(View view) {
+        clicEnIniciarSesion();
+    }
     public void clicEnRegistrarse(View view) {
         Intent intent = new Intent(this, Register.class);
         startActivity(intent);
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-            // Verificar si se presionó la tecla Intro y si los campos están completos
-            if (isFieldsCompleted()) {
-                clicEnIniciarSesion(v);
-
-                // Ocultar el teclado
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                return true;
-            }
+    private void hideKeyboard(IBinder windowToken) {
+        if (windowToken != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(windowToken, 0);
         }
-        return false;
-    }
-
-    private boolean isFieldsCompleted() {
-        String emailText = email.getText().toString();
-        String contraseniaText = contrasenia.getText().toString();
-        return !TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(contraseniaText);
     }
 
 }
