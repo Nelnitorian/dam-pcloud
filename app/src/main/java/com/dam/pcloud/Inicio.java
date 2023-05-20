@@ -41,7 +41,9 @@ public class Inicio extends AppCompatActivity {
     private ArrayList<ListItem> items;
     private Context context;
     IPcloudRestHandler handler;
+    PCloudFolder currentFolder;
     private static final String LOG_TAG = "Inicio";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,39 +57,18 @@ public class Inicio extends AppCompatActivity {
         handler.folder_list("0", new HandlerCallBack() {
             @Override
             public void onSuccess(Object obj) {
-                PCloudFolder folder = (PCloudFolder) obj;
+                currentFolder = (PCloudFolder) obj;
 
                 Log.d(LOG_TAG, "Exito en la peticion de la carpeta con id 0");
-                Log.d(LOG_TAG, "Se han traído "+folder.getChildren().size()+" hijos del directorio.");
+                Log.d(LOG_TAG, "Se han traído "+currentFolder.getChildren().size()+" hijos del directorio.");
 
                 // Poblamos los ListItem para la vista
                 items = new ArrayList<>();
-                for (PCloudItem item : folder.getChildren()) {
+                for (PCloudItem item : currentFolder.getChildren()) {
                     items.add(parsePCloudItemToListItem(item));
                 }
 
-                lista = (ListView) findViewById(R.id.lista_archivos);
-                buscar = (SearchView) findViewById(R.id.buscar);
-
-                //Aplicamos un formato personalizado a cada elemento de la lista
-                adaptador = new Adaptador(context, items);
-                lista.setAdapter(adaptador);
-
-                //Filtro del buscador
-                buscar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        Inicio.this.adaptador.getFilter().filter(query);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        Inicio.this.adaptador.getFilter().filter(newText);
-                        return false;
-                    }
-                });
-
+                refreshView();
             }
 
             @Override
@@ -161,8 +142,28 @@ public class Inicio extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String nuevaCarpeta = editText.getText().toString();
-                //LLAMAR AL MÉTODO CREAR CARPETA Y POSTERIORMENTE ACTUALIZAR ARCHIVOS LOCALES
-                Log.d("Inicio", "Nueva carpeta: "+nuevaCarpeta);
+                handler.folder_create(currentFolder.getId(), nuevaCarpeta, new HandlerCallBack() {
+                    @Override
+                    public void onSuccess(Object obj) {
+                        PCloudFolder folder = (PCloudFolder) obj;
+
+                        ArrayList<PCloudItem> children = currentFolder.getChildren();
+                        children.add(folder);
+                        currentFolder.setChildren(children);
+
+                        items.add(parsePCloudItemToListItem(folder));
+
+                        Log.d(LOG_TAG, "Creada nueva carpeta: "+folder.getName());
+                        refreshView();
+
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        Log.d(LOG_TAG, "Error " + error.getCode() + " al crear carpeta: " + error.getDescription());
+                        Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al crear carpeta: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -184,12 +185,36 @@ public class Inicio extends AppCompatActivity {
             // Es una imagen
             listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
         } else if (pcloudItem.getType() == PCloudItem.ItemType.AUDIO){
-            // Es una imagen
+            // Es un audio
             listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
         } else {
             // Es otro
             listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
         }
         return listItem;
+    }
+
+    private void refreshView(){
+        lista = (ListView) findViewById(R.id.lista_archivos);
+        buscar = (SearchView) findViewById(R.id.buscar);
+
+        //Aplicamos un formato personalizado a cada elemento de la lista
+        adaptador = new Adaptador(context, items);
+        lista.setAdapter(adaptador);
+
+        //Filtro del buscador
+        buscar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Inicio.this.adaptador.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Inicio.this.adaptador.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 }

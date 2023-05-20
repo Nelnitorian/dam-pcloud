@@ -40,8 +40,8 @@ public interface IPcloudRestHandler {
      *
      * Requiere auth.
      *
-     *  Al llamar a HandlerCallBack.onSuccess() se le pasará un Integer con el código de estado.
-     *
+     *  Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
+     *  directorio creado.
      @param folder_id id del directorio padre
      @param name nombre del directorio a crear
      @param callback objeto de callback que gestionará el resultado
@@ -54,7 +54,7 @@ public interface IPcloudRestHandler {
      * Requiere auth.
      *
      * Al llamar a HandlerCallBack.onSuccess() se le pasará un PCloudFolder con la información del
-     * directorio creado.
+     * directorio renombrado.
      *
      @param folder_id id del directorio
      @param new_name nuevo nombre del directorio
