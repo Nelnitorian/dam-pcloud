@@ -122,11 +122,11 @@ public class Adaptador extends BaseAdapter implements Filterable {
 
                 // Realizar la acción correspondiente según el elemento seleccionado
                 if (selectedItem.equals("Renombrar")) {
-                    mostrarDialogo(selectedListItem);
+                    mostrarDialogoRenombrar(selectedListItem);
                 } else if (selectedItem.equals("Copiar")) {
                     //metodoOpcion2();
                 } else if (selectedItem.equals("Eliminar")) {
-                    //metodoOpcion3();
+                    mostrarDialogoEliminar(selectedListItem);
                 }
 
                 return true;
@@ -136,7 +136,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
         popupMenu.show();
     }
     //Método para mostrar un cuadro de diálogo
-    private void mostrarDialogo(ListItem item) {
+    private void mostrarDialogoRenombrar(ListItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Renombrar");
 
@@ -161,6 +161,27 @@ public class Adaptador extends BaseAdapter implements Filterable {
                     }
                 });
                 builder.show();
+    }
+
+    private void mostrarDialogoEliminar(ListItem item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("¿Está seguro de que desea Eliminar?");
+
+        builder.setMessage("Esta acción es irreversible.");
+        builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(LOG_TAG, "Borrado: "+item.getPcloudItem().getName());
+                context.deleteEntryPoint(item);
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //nada
+            }
+        });
+        builder.show();
     }
 
     //Método getFilter para poder filtrar las búsquedas en la pantalla Inicio

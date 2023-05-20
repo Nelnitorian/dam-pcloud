@@ -265,6 +265,40 @@ public class Inicio extends AppCompatActivity {
         }
     }
 
+    void deleteEntryPoint(ListItem listItem){
+        PCloudItem pcloudItem = listItem.getPcloudItem();
+
+        String id = pcloudItem.getId();
+        HandlerCallBack callback = new HandlerCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                PCloudItem pCloudItem = (PCloudItem) obj;
+                Log.d(LOG_TAG, "Exito borrando "+listItem.getTextItem());
+
+                ArrayList<PCloudItem> children = currentFolder.getChildren();
+
+                children.remove(pCloudItem);
+                items.remove(listItem);
+
+                refreshView();
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al renombrar: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al renombrar: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
+            // Es directorio
+            handler.folder_delete(id, callback);
+        } else {
+            // Es fichero
+            handler.file_delete(id, callback);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
