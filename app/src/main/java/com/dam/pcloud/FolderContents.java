@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -114,14 +115,14 @@ public class FolderContents extends AppCompatActivity {
         for (int i = 0; i < plusArray.length; i++) {
             popupMenu.getMenu().add(Menu.NONE, i, i, plusArray[i]);
         }
+        if (MypCloud.getInstance().getClipboard() != null)
+            popupMenu.getMenu().add(Menu.NONE, plusArray.length, plusArray.length, "Pegar");
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int menuItemId = item.getItemId();
-
                 // Obtener el elemento seleccionado del array
-                String selectedItem = plusArray[menuItemId];
+                String selectedItem = (String) item.getTitle();
 
                 // Realizar la acción correspondiente según el elemento seleccionado
                 if (selectedItem.equals("Crear carpeta")) {
@@ -130,6 +131,9 @@ public class FolderContents extends AppCompatActivity {
                 } else if (selectedItem.equals("Subir archivos")) {
                     Log.d(LOG_TAG, "Se ha seleccionado 'Subir archivos'.");
                     openFileExplorer();
+                }else if (selectedItem.equals("Pegar")) {
+                    Log.d(LOG_TAG, "Se ha seleccionado 'Pegar'.");
+                    pasteItem();
                 }
                 return true;
             }
@@ -423,5 +427,55 @@ public class FolderContents extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al subir fichero: " + error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void copyItemEntryPoint(ListItem listItem){
+        MypCloud.getInstance().setClipboard(listItem.getPcloudItem());
+        Log.d(LOG_TAG, "Se ha copiado el item: "+listItem.getTextItem());
+        Toast.makeText(getApplicationContext(), "Se ha copiado correctamente", Toast.LENGTH_SHORT).show();
+    }
+
+    public void pasteItem(){
+        PCloudItem clipboardItem = MypCloud.getInstance().getClipboard();
+        Log.d(LOG_TAG, "Pegando item "+clipboardItem.getName());
+
+        // Copiar un archivo
+
+        String to_name = getNonTakenName(clipboardItem.getName());
+
+        handler.file_copy(clipboardItem.getId(), currentFolder.getId(), to_name, new HandlerCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                PCloudItem item = (PCloudItem) obj;
+
+                ArrayList<PCloudItem> children = currentFolder.getChildren();
+                children.add(item);
+
+                ListItem listItem = parsePCloudItemToListItem(item);
+                items.add(listItem);
+
+                refreshView();
+                Log.d(LOG_TAG, "Exito pegando");
+                Toast.makeText(getApplicationContext(), "Exito pegando", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al pegar: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al pegar: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String getNonTakenName(String base_name){
+        String non_taken = base_name;
+        for (PCloudItem item : currentFolder.getChildren()){
+            if (item.getName().equals(base_name)) {
+                non_taken = getNonTakenName(non_taken + " (Copy)");
+                break;
+            }
+        }
+        return non_taken;
     }
 }

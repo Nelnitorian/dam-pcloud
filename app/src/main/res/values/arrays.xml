@@ -2,11 +2,13 @@
 <resources>
     <string-array name="points">
         <item>Renombrar</item>
-        <item>Copiar</item>
         <item>Eliminar</item>
     </string-array>
     <string-array name="plus">
         <item>Crear carpeta</item>
         <item>Subir archivos</item>
+    </string-array>
+    <string-array name="long_click">
+        <item>Pegar</item>
     </string-array>
 </resources>

@@ -82,15 +82,15 @@ public class Adaptador extends BaseAdapter implements Filterable {
         textItem.setText(item.getTextItem());
         points.setImageResource(item.getImgPoints());
 
+        ListItem finalItem = item;
         //Si hacemos click en los 3 puntitos de algún elemento llamamos a showDesplegable
         points.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDesplegable(v, position);
+                showDesplegable(v, position, finalItem);
             }
         });
 
-        ListItem finalItem = item;
         if (item.getPcloudItem().getType() == PCloudItem.ItemType.FOLDER) {
             textItem.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,7 +107,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
     }
 
     //Método para mostrar desplegable al pulsar los puntitos de la pantalla Inicio y seleccionar una opción
-    private void showDesplegable(View view, int position) {
+    private void showDesplegable(View view, int position, ListItem item) {
         PopupMenu popupMenu = new PopupMenu(context, view);
 
         // Obtener los elementos del array
@@ -118,13 +118,14 @@ public class Adaptador extends BaseAdapter implements Filterable {
             popupMenu.getMenu().add(Menu.NONE, i, i, pointsArray[i]);
         }
 
+        if(item.getPcloudItem().getType() != PCloudItem.ItemType.FOLDER)
+            popupMenu.getMenu().add(Menu.NONE, pointsArray.length, pointsArray.length, "Copiar");
+
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int menuItemId = item.getItemId();
+                String selectedItem = (String)item.getTitle();
 
-                // Obtener el elemento seleccionado del array
-                String selectedItem = pointsArray[menuItemId];
                 // Obtener el objeto ListItem correspondiente a la posición seleccionada
                 ListItem selectedListItem = (ListItem) getItem(position);
                 // Obtener el nombre del archivo del ListItem seleccionado
@@ -137,7 +138,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
                 if (selectedItem.equals("Renombrar")) {
                     mostrarDialogoRenombrar(selectedListItem);
                 } else if (selectedItem.equals("Copiar")) {
-                    //metodoOpcion2();
+                    copyItem(selectedListItem);
                 } else if (selectedItem.equals("Eliminar")) {
                     mostrarDialogoEliminar(selectedListItem);
                 }
@@ -236,4 +237,7 @@ public class Adaptador extends BaseAdapter implements Filterable {
         };
     }
 
+    private void copyItem(ListItem listItem){
+        context.copyItemEntryPoint(listItem);
+    }
 }

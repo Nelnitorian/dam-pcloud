@@ -20,6 +20,7 @@ public class HttpHandler {
     }
 
     public void getRequest (String uri, HttpCallBack callback) {
+        Log.d("HTTPHANDLER", "Uri: "+uri);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, uri, null,
                 new Response.Listener<JSONObject>() {
                     @Override
