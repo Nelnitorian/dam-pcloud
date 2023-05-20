@@ -10,6 +10,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MypCloud.getInstance().setFilesDir(this.getFilesDir());
 
     }
     public void clicEnIniciarSesion(View view) {

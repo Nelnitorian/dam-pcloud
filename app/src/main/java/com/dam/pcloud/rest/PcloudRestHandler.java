@@ -3,6 +3,7 @@ package com.dam.pcloud.rest;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
+import com.dam.pcloud.MypCloud;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PcloudRestHandler implements IPcloudRestHandler {
+    private static final String LOG_TAG = "PcloudRestHandler";
     private static final String API_ENDPOINT = "https://eapi.pcloud.com/";
 
     private static final String METHOD_REGISTER = "register";
@@ -80,8 +83,8 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String RESPONSE_AUTH = "auth";
     private static final String RESPONSE_FD = "fd";
     private static final String CONFIG_AUTH_TOKEN = "token";
-
-    private static final String CONFIG_AUTH_FILE_PATH = "/data/user/0/com.dam.pcloud/files/auth.conf";
+    private final File CONFIG_AUTH_FILE;
+    private final String CONFIG_AUTH_FILE_NAME = "auth.conf";
 
 
 
@@ -92,63 +95,29 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
     public PcloudRestHandler(RequestQueue queue){
         http_handler = new HttpHandler(queue);
-        auth_token = retrieveAuthToken();
+
+        Log.d(LOG_TAG, "Path de filesDir: "+MypCloud.getInstance().getFilesDir());
+        CONFIG_AUTH_FILE = new File(MypCloud.getInstance().getFilesDir(), CONFIG_AUTH_FILE_NAME);
+        if (CONFIG_AUTH_FILE.exists()){
+            auth_token = retrieveAuthToken();
+        } else {
+            auth_token = "";
+            createFile(CONFIG_AUTH_FILE);
+        }
     }
 
-    private void file_open_new(String folder_id, String name, com.dam.pcloud.rest.HandlerCallBack callback) {
-        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FOLDER_ID, folder_id},
-                {PARAM_NAME, name},
-                {PARAM_AUTH, auth_token}
-        });
-
-        String final_uri = API_ENDPOINT + METHOD_FILE_OPEN + parameters;
-
-        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
-
-            @Override
-            public void onSuccess(JSONObject json) {
-                if (checkForError(json)){
-                    callback.onError(extractError(json));
-                    return;
-                }
-                try {
-                    Integer fd = json.getInt(RESPONSE_FD);
-                    callback.onSuccess(fd);
-                } catch (JSONException e) {
-                    callback.onError(extractError(json));
-                }
-            }
-        });
-    }
-    private void file_open_existing(String file_id, com.dam.pcloud.rest.HandlerCallBack callback) {
-        String parameters = com.dam.pcloud.rest.ParameterHandler.parseRequest(new String[][]{
-                {PARAM_FILE_ID, file_id},
-                {PARAM_AUTH, auth_token}
-        });
-
-        String final_uri = API_ENDPOINT + METHOD_FILE_OPEN + parameters;
-
-        http_handler.getRequest(final_uri, new com.dam.pcloud.rest.HttpCallBack() {
-
-            @Override
-            public void onSuccess(JSONObject json) {
-                if (checkForError(json)){
-                    callback.onError(extractError(json));
-                    return;
-                }
-                try {
-                    Integer fd = json.getInt(RESPONSE_FD);
-                    callback.onSuccess(fd);
-                } catch (JSONException e) {
-                    callback.onError(extractError(json));
-                }
-            }
-        });
+    private void createFile(File file){
+        Log.d(LOG_TAG, "Creating: "+file.getPath());
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception
+        }
     }
 
     private String readFile(String path) {
-        Log.d("PcloudRestHandler", "Leyendo el fichero "+path);
+        Log.d(LOG_TAG, "Leyendo el fichero "+path);
         String [] split = path.split("/");
         String parent_path = String.join("/", Arrays.copyOf(split, split.length - 1));
         String file_name = split[split.length-1];
@@ -183,7 +152,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
             }
             buffer.flush();
         } catch (IOException e){
-            Log.d("PcloudRestHandler", "Error en la lectura del InputStream");
+            Log.d(LOG_TAG, "Error en la lectura del InputStream");
         }
         return buffer.toByteArray();
     }
@@ -750,7 +719,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
 
     private String retrieveAuthToken(){
         try {
-            String string_json = readFile(CONFIG_AUTH_FILE_PATH);
+            String string_json = readFile(CONFIG_AUTH_FILE.getAbsolutePath());
             JSONObject obj = new JSONObject(string_json);
             return obj.getString(CONFIG_AUTH_TOKEN);
         } catch (JSONException e) {
@@ -762,10 +731,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         try {
             JSONObject json = new JSONObject();
             json.put(CONFIG_AUTH_TOKEN, token);
-            FileWriter file = new FileWriter(CONFIG_AUTH_FILE_PATH);
+            FileWriter file = new FileWriter(CONFIG_AUTH_FILE.getPath());
             file.write(json.toString());
             file.close();
-            Log.d("PcloudRestHandler", "Escribiendo el archivo: "+CONFIG_AUTH_FILE_PATH);
+            Log.d(LOG_TAG, "Escribiendo el archivo: "+CONFIG_AUTH_FILE.getPath());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
