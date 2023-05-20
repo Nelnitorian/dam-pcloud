@@ -109,20 +109,18 @@ public class Inicio extends AppCompatActivity {
 
                 // Realizar la acción correspondiente según el elemento seleccionado
                 if (selectedItem.equals("Crear carpeta")) {
-                    Log.d("Inicio", "Se ha seleccionado 'Crear carpeta'.");
+                    Log.d(LOG_TAG, "Se ha seleccionado 'Crear carpeta'.");
                     mostrarDialogo();
                 } else if (selectedItem.equals("Subir fotos")) {
-                    Log.d("Inicio", "Se ha seleccionado 'Subir fotos'.");
+                    Log.d(LOG_TAG, "Se ha seleccionado 'Subir fotos'.");
                     //LLAMAR AL MÉTODO DE UPLOAD CORRESPONDIENTE
                 } else if (selectedItem.equals("Subir archivos")) {
-                    Log.d("Inicio", "Se ha seleccionado 'Subir archivos'.");
+                    Log.d(LOG_TAG, "Se ha seleccionado 'Subir archivos'.");
                     //LLAMAR AL MÉTODO DE UPLOAD CORRESPONDIENTE
                 }
-
                 return true;
             }
         });
-
         popupMenu.show();
     }
 
