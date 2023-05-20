@@ -188,13 +188,13 @@ public class Inicio extends AppCompatActivity {
         ListItem listItem;
         if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
             // Es un directorio
-            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+            listItem = new ListItem(R.drawable.folder, pcloudItem, R.drawable.points);
         } else if (pcloudItem.getType() == PCloudItem.ItemType.IMAGE){
             // Es una imagen
-            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+            listItem = new ListItem(R.drawable.photo, pcloudItem, R.drawable.points);
         } else if (pcloudItem.getType() == PCloudItem.ItemType.AUDIO){
             // Es un audio
-            listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
+            listItem = new ListItem(R.drawable.music, pcloudItem, R.drawable.points);
         } else {
             // Es otro
             listItem = new ListItem(R.drawable.file, pcloudItem, R.drawable.points);
