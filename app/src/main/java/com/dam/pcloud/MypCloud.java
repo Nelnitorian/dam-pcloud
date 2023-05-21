@@ -1,4 +1,5 @@
 package com.dam.pcloud;
+import android.app.Activity;
 import android.app.Application;
 
 import com.android.volley.toolbox.Volley;
@@ -13,6 +14,7 @@ public class MypCloud extends Application {
     private IPcloudRestHandler mPcloudRestHandler = null;
     private File mFile;
     private PCloudItem mClipboardItem;
+    private boolean mIsLogout;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,5 +40,12 @@ public class MypCloud extends Application {
     }
     public void setClipboard(PCloudItem item){
         this.mClipboardItem = item;
+    }
+
+    public boolean isLogout() {
+        return mIsLogout;
+    }
+    public void setIsLogout(boolean isLogout) {
+        mIsLogout = isLogout;
     }
 }
