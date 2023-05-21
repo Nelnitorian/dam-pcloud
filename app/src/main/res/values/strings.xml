@@ -16,4 +16,7 @@
     <string name="inicia">¿Ya tienes cuenta? Inicia sesion</string>
     <string name="recuperar">Recuperar contraseña</string>
     <string name="texto_correo">Introduce tu correo electrónico para poder recuperar tu contraseña.</string>
+    <string name="inicio">Inicio</string>
+    <string name="buscar">Buscar</string>
+    <string name="archivos">Archivos</string>
 </resources>

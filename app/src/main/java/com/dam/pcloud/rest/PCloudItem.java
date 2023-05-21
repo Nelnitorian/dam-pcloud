@@ -6,6 +6,7 @@ public abstract class PCloudItem {
         FILE(2),
         AUDIO(3),
         IMAGE(4),
+        VIDEO(5),
         ;
 
         private int type;
