@@ -192,7 +192,7 @@ public class FolderContents extends AppCompatActivity {
 
     private ListItem parsePCloudItemToListItem(PCloudItem pcloudItem){
         ListItem listItem;
-        Log.d(LOG_TAG, "pcloudItem type = "+pcloudItem.getType());
+        Log.d(LOG_TAG, "pcloudItem. name: "+pcloudItem.getName()+" type = "+pcloudItem.getType());
         if (pcloudItem.getType() == PCloudItem.ItemType.FOLDER){
             // Es un directorio
             listItem = new ListItem(R.drawable.folder, pcloudItem, R.drawable.points);
@@ -255,8 +255,8 @@ public class FolderContents extends AppCompatActivity {
                 children.set(indexChildren, pCloudItem);
 
                 int indexListItem = items.indexOf(listItem);
-                listItem.setPcloudItemAndText(pCloudItem);
-                items.set(indexListItem, listItem);
+                ListItem newListitem = parsePCloudItemToListItem(pCloudItem);
+                items.set(indexListItem, newListitem);
 
                 refreshView();
             }
