@@ -32,6 +32,8 @@
         android:layout_marginTop="7dp"
         android:gravity="top"
         android:text="Cerrar sesión"
+        android:onClick="logout"
+        android:focusable="false"
         android:textAppearance="@style/cerrar_sesion" />
 
     <!-- Buscador -->

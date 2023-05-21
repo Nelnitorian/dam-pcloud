@@ -478,4 +478,21 @@ public class FolderContents extends AppCompatActivity {
         }
         return non_taken;
     }
+
+    public void logout(View v){
+        handler.logout(new HandlerCallBack() {
+            @Override
+            public void onSuccess(Object obj) {
+                Log.d(LOG_TAG, "Exito al cerrar sesión");
+                Toast.makeText(getApplicationContext(), "Exito al cerrar sesión", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onError(Error error) {
+                Log.d(LOG_TAG, "Error " + error.getCode() + " al cerrar sesión: " + error.getDescription());
+                Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al cerrar sesión: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

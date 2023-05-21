@@ -45,6 +45,7 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String METHOD_FILE_DELETE = "deletefile";
     private static final String METHOD_FILE_COPY = "copyfile";
     private static final String METHOD_FILE_OPEN = "file_open";
+    private static final String METHOD_LOGOUT = "logout";
 
     private static final String PARAM_MAIL = "mail";
     private static final String PARAM_PASSWORD = "password";
@@ -742,4 +743,30 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         }
     }
 
+    public void logout(HandlerCallBack callback){
+        String parameters = ParameterHandler.parseRequest(new String[][]{
+                {PARAM_AUTH, this.auth_token}
+        });
+
+        String final_uri = API_ENDPOINT + METHOD_LOGOUT + parameters;
+
+        http_handler.getRequest(final_uri, new HttpCallBack() {
+
+            @Override
+            public void onSuccess(JSONObject json) {
+                if (checkForError(json)){
+                    callback.onError(extractError(json));
+                    return;
+                }
+                try {
+                    updateAuthToken("");
+                    auth_token="";
+                    Integer status_code = json.getInt(RESPONSE_RESULT);
+                    callback.onSuccess(status_code);
+                } catch (JSONException e) {
+                    callback.onError(extractError(json));
+                }
+            }
+        });
+    }
 }

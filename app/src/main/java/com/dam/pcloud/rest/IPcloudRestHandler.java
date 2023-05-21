@@ -211,4 +211,13 @@ public interface IPcloudRestHandler {
      */
     public boolean alreadyLogged();
 
+    /** Cierra sesión en el servidor.
+     *
+     * Requiere auth.
+     *
+     * Al llamar a HandlerCallBack.onSuccess() se le pasará un Integer con el código de estado.
+     *
+     @param callback objeto de callback que gestionará el resultado
+     */
+    public void logout(HandlerCallBack callback);
 }
