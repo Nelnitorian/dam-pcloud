@@ -59,6 +59,7 @@ public class FolderContents extends AppCompatActivity {
 
         this.context = this;
 
+        // Recupera el handler
         this.handler = MypCloud.getInstance().getHandler();
 
         Intent intent = getIntent();
@@ -87,6 +88,13 @@ public class FolderContents extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error " + error.getCode() + " al solicitar ficheros: " + error.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MypCloud.getInstance().isLogout())
+            finish();
     }
 
     private void changeTitle(){
@@ -468,10 +476,15 @@ public class FolderContents extends AppCompatActivity {
     }
 
     private String getNonTakenName(String base_name){
+        Log.d(LOG_TAG, "base_name="+base_name);
         String non_taken = base_name;
         for (PCloudItem item : currentFolder.getChildren()){
             if (item.getName().equals(base_name)) {
-                non_taken = getNonTakenName(non_taken + " (Copy)");
+                String [] split_name = non_taken.split("\\.");
+                Log.d(LOG_TAG, "split.length="+split_name.length);
+                split_name[0] = split_name[0] + " (Copy)";
+                String new_name = String.join(".", split_name);
+                non_taken = getNonTakenName(new_name);
                 break;
             }
         }
@@ -484,6 +497,7 @@ public class FolderContents extends AppCompatActivity {
             public void onSuccess(Object obj) {
                 Log.d(LOG_TAG, "Exito al cerrar sesión");
                 Toast.makeText(getApplicationContext(), "Exito al cerrar sesión", Toast.LENGTH_SHORT).show();
+                MypCloud.getInstance().setIsLogout(true);
                 finish();
             }
 

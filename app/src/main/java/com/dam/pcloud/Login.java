@@ -66,6 +66,7 @@ public class Login extends AppCompatActivity {
 
                 // Exito
                 Log.d(LOG_TAG, "Login exitoso");
+                MypCloud.getInstance().setIsLogout(false);
                 Intent intent = new Intent(getApplicationContext(), FolderContents.class);
                 intent.putExtra("folder_id", "0");
                 startActivity(intent);
