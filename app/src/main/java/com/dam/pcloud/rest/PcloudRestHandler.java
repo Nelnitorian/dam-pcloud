@@ -31,7 +31,6 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String METHOD_REGISTER = "register";
     private static final String METHOD_DIGEST = "getdigest";
     private static final String METHOD_LOGIN_DIGEST = "userinfo";
-    //    private static final String METHOD_USER_INFO = "userinfo";
     private static final String METHOD_CREATE_FOLDER = "createfolder";
     private static final String METHOD_LOST_PASSWORD = "lostpassword";
     private static final String METHOD_FOLDER_RENAME = "renamefolder";
@@ -39,12 +38,10 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String METHOD_FOLDER_DELETE = "deletefolder";
     private static final String METHOD_FOLDER_LIST = "listfolder";
     private static final String METHOD_FILE_UPLOAD = "uploadfile";
-    private static final String METHOD_FILE_DOWNLOAD = "downloadfile";
     private static final String METHOD_FILE_RENAME = "renamefile";
     private static final String METHOD_FILE_STAT = "stat";
     private static final String METHOD_FILE_DELETE = "deletefile";
     private static final String METHOD_FILE_COPY = "copyfile";
-    private static final String METHOD_FILE_OPEN = "file_open";
     private static final String METHOD_LOGOUT = "logout";
 
     private static final String PARAM_MAIL = "mail";
@@ -63,10 +60,6 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String PARAM_FILE_ID ="fileid";
     private static final String PARAM_DATA ="data";
 
-    private static final String FLAG_FILE_O_APPEND = "0400";
-    private static final String FLAG_FILE_O_WRITE = "0002";
-    private static final String FLAG_FILE_O_CREAT = "0040";
-
 
     private static final String RESPONSE_ERROR ="error";
 
@@ -82,7 +75,6 @@ public class PcloudRestHandler implements IPcloudRestHandler {
     private static final String RESPONSE_SIZE = "size";
     private static final String RESPONSE_DIGEST = "digest";
     private static final String RESPONSE_AUTH = "auth";
-    private static final String RESPONSE_FD = "fd";
     private static final String CONFIG_AUTH_TOKEN = "token";
     private final File CONFIG_AUTH_FILE;
     private final String CONFIG_AUTH_FILE_NAME = "auth.conf";
@@ -544,30 +536,6 @@ public class PcloudRestHandler implements IPcloudRestHandler {
         });
     }
 
-//    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback) {
-////        TODO terminar. No sé descargar ficheros en http. Mirar: https://stackoverflow.com/questions/73759126/download-files-with-the-pcloud-api
-//
-//        String parameters = ParameterHandler.parseRequest(new String[][]{
-//                {PARAM_FOLDER_ID, folder_id},
-//                {PARAM_FILE_NAME, file_name},
-//                {PARAM_AUTH, this.auth_token}
-//        });
-//
-//        String final_uri = API_ENDPOINT + METHOD_FILE_DOWNLOAD + parameters;
-//
-//        http_handler.getRequest(final_uri, new HttpCallBack() {
-//
-//            @Override
-//            public void onSuccess(JSONObject json) {
-//                try {
-//                    Folder new_folder = createFolderFromJson(json.getJSONObject(RESPONSE_DATA));
-//                    callback.onSuccess(new_folder);
-//                } catch (JSONException e) {
-//                    callback.onError(extractError(json));
-//                }
-//            }
-//        });
-//    }
 
     public void file_upload(String folder_id, String file_name, InputStream local_file_input_stream, com.dam.pcloud.rest.HandlerCallBack callback) {
 

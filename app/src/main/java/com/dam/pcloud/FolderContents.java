@@ -343,7 +343,6 @@ public class FolderContents extends AppCompatActivity {
     private void openFileExplorer() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        // TODO remove waring deprecation
         startActivityForResult(intent, PICKFILE_REQUEST_CODE);
     }
 

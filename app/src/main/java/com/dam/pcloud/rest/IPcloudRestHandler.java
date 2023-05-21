@@ -118,9 +118,6 @@ public interface IPcloudRestHandler {
     */
     public void folder_list(String folder_id, HandlerCallBack callback);
 
-//    // TODO terminar una vez esté completo
-//    public void file_download(String folder_id, String file_name, String local_file_path, HandlerCallBack callback);
-
 
     /** Sube un fichero.
      *
