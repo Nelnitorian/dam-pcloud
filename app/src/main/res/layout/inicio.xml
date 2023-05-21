@@ -12,7 +12,7 @@
     <!-- Inicio -->
     <TextView
         android:id="@+id/inicio"
-        android:layout_width="213dp"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -21,6 +21,18 @@
         android:gravity="top"
         android:textAppearance="@style/titulo" />
 
+    <!-- Cerrar sesión -->
+    <TextView
+        android:id="@+id/cerrar_sesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="297dp"
+        android:layout_marginTop="7dp"
+        android:gravity="top"
+        android:text="Cerrar sesión"
+        android:textAppearance="@style/cerrar_sesion" />
 
     <!-- Buscador -->
     <View
